@@ -38,7 +38,8 @@ export const FormItem: React.FC<FormItemProps> = ({ name, label, control, errors
 
 const LoginScreen: React.FC<{}> = (props) => {
 
-  const { control, handleSubmit, formState: { errors, isValid } } = useForm<LoginFormData>({
+  const { control, handleSubmit, formState: { errors, isDirty, isValid } } = useForm<LoginFormData>({
+    mode: 'all',
     defaultValues: {
       username: '',
       password: ''
@@ -63,7 +64,7 @@ const LoginScreen: React.FC<{}> = (props) => {
       />
       <View style={styles.actionsMenu}>
 
-        <Button title="Enviar" disabled={!isValid} onPress={handleSubmit(onSubmit)} />
+        <Button title="Enviar" disabled={!isDirty || !isValid} onPress={handleSubmit(onSubmit)} />
       </View>
     </View>
   )
