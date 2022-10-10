@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "start-tunnel": "expo start --tunnel"
   },
   "dependencies": {
     "@expo/metro-config": "^0.4.0",
