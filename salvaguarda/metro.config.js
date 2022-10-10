@@ -11,3 +11,4 @@ module.exports = {
       sourceExts: ['jsx', 'js', 'ts', 'tsx', 'cjs', 'cjx', 'json'],
     },
   };
+  
