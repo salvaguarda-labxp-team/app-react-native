@@ -62,6 +62,11 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
                 style={styles.button}
                 onPress={() => navigation.navigate("Register")}
             />
+            <Button
+                title={"Testar envio de arquivos"}
+                style={styles.button}
+                onPress={() => navigation.navigate("Home")}
+            />
         </View>
     );
 };
