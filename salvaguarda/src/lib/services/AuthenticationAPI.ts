@@ -1,12 +1,12 @@
 import { IUser } from '../../definitions/IUser';
-import { signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, UserCredential } from "firebase/auth";
 import { auth } from '../utils/firebase.js';
 
 export class AuthenticationAPI {
     static readonly defaultPhotoURL = 'https://www.trackergps.com/canvas/images/icons/avatar.jpg';
 
-    static async login(email: string, password: string): Promise<void> {
-        await signInWithEmailAndPassword(auth, email, password);
+    static async login(email: string, password: string): Promise<UserCredential> {
+        return await signInWithEmailAndPassword(auth, email, password);
     };
 
     static async signOut() : Promise<void> {

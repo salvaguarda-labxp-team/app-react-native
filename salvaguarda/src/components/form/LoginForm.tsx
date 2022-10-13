@@ -12,6 +12,7 @@ export type FormItemProps = {
     name: "username" | "password";
     control: Control<LoginFormData>;
     errors: any;
+    rules: any;
 }
 
 export type LoginFormProps = {
@@ -19,17 +20,16 @@ export type LoginFormProps = {
     errors: any,
     isDirty: boolean,
     isValid: boolean,
-    onSubmit: any
+    onSubmit: any,
+    rules: any
 }
 
-export const FormItem: React.FC<FormItemProps> = ({ name, label, control, errors }) => {
+export const FormItem: React.FC<FormItemProps> = ({ name, label, control, errors, rules }) => {
     return <View style={styles.formItem} >
         <Text>{label}</Text>
         {<Controller
             control={control}
-            rules={{
-                required: true,
-            }}
+            rules={rules}
             render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                     style={styles.input}
@@ -40,24 +40,26 @@ export const FormItem: React.FC<FormItemProps> = ({ name, label, control, errors
             )}
             name={name}
         />}
-        {errors[name] && <Text>This is required.</Text>}
+        {errors[name] && <Text>{errors[name].message}</Text>}
     </View>
 }
 
 
-export const LoginForm: React.FC<LoginFormProps> = ({ control, errors, isDirty, isValid, onSubmit }) => {
+export const LoginForm: React.FC<LoginFormProps> = ({ control, errors, isDirty, isValid, onSubmit, rules }) => {
     return <View style={styles.form}>
         <FormItem
             control={control}
             label={"Username"}
             name={"username"}
             errors={errors}
+            rules={rules['username']}
         />
         <FormItem
             control={control}
             label={"Senha"}
             name={"password"}
             errors={errors}
+            rules={rules['password']}
         />
         <View style={styles.actionsMenu}>
             <Button title="Enviar" disabled={!isDirty || !isValid} onPress={onSubmit} />
@@ -65,12 +67,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({ control, errors, isDirty, 
     </View>
 }
 
-const formWidth = 300;
+const formWidth = 330;
 
 const styles = StyleSheet.create({
     label: {
         color: 'white',
         margin: 20,
+        marginBottom: 5,
         marginLeft: 0,
     },
     form: {
@@ -79,17 +82,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 8,
         borderColor: 'black',
-        width: formWidth,
         height: 600,
     },
     formItem: {
         flexDirection: 'column',
         padding: 0,
+        marginBottom: 10,
         height: 80,
-        width: formWidth
     },
     actionsMenu: {
-        width: formWidth,
         marginTop: 20,
         flexDirection: 'row',
         justifyContent: 'flex-end'
