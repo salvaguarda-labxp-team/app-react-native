@@ -11,6 +11,7 @@ export type FormItemProps = {
     label: string;
     name: "username" | "password";
     control: Control<LoginFormData>;
+    secureTextEntry?: boolean,
     errors: any;
     rules: any;
 }
@@ -24,7 +25,7 @@ export type LoginFormProps = {
     rules: any
 }
 
-export const FormItem: React.FC<FormItemProps> = ({ name, label, control, errors, rules }) => {
+export const FormItem: React.FC<FormItemProps> = ({ name, label, control, errors, rules, secureTextEntry }) => {
     return <View style={styles.formItem} >
         <Text>{label}</Text>
         {<Controller
@@ -36,6 +37,7 @@ export const FormItem: React.FC<FormItemProps> = ({ name, label, control, errors
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}
+                    secureTextEntry={secureTextEntry}
                 />
             )}
             name={name}
@@ -58,6 +60,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ control, errors, isDirty, 
             control={control}
             label={"Senha"}
             name={"password"}
+            secureTextEntry={true}
             errors={errors}
             rules={rules['password']}
         />
