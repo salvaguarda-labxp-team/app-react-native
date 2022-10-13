@@ -50,7 +50,7 @@ const LoginPage = ({ navigation }: LoginScreenProps) => {
     const rules = useMemo(() => {
         return {
             username: { required: 'Campo deve ser preenchido', minLength: { value: 3, message: 'Username deve possuir no mínimo 3 caracteres' } },
-            password: { required: 'Campo deve ser preenchido', minLength: { value: 8, message: 'Senha deve possuir no mínimo 8 caracteres' } },
+            password: { required: 'Campo deve ser preenchido', minLength: { value: 6, message: 'Senha deve possuir no mínimo 6 caracteres' } },
         }
     }, [])
     return (
