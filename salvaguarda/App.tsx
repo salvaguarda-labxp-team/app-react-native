@@ -1,20 +1,8 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import  LoginScreen from './screens/LoginScreen';
+/*****************************************************************
+Define qual será o ponto de entrada do aplicativo
+*****************************************************************/
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <LoginScreen />
-    </View>
-  );
-}
+import { registerRootComponent } from 'expo';
+import Navigation from "./src/navigation"
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default registerRootComponent(Navigation); 

@@ -1,5 +1,6 @@
 {
   "expo": {
+    "entryPoint": "./App.tsx",
     "name": "salvaguarda",
     "slug": "salvaguarda",
     "version": "1.0.0",
