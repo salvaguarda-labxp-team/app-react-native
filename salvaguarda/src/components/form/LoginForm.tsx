@@ -1,6 +1,8 @@
 import React from 'react';
 import { Text, View, TextInput, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import { Controller, Control } from "react-hook-form";
+import { Link } from '@react-navigation/native';
+import { RootStackParamsList } from '../../definitions';
 
 export type LoginFormData = {
     username: string;
@@ -22,7 +24,8 @@ export type LoginFormProps = {
     isDirty: boolean,
     isValid: boolean,
     onSubmit: any,
-    rules: any
+    rules: any,
+    redirectTo: (e: keyof RootStackParamsList) => void
 }
 
 export const FormItem: React.FC<FormItemProps> = ({ name, label, control, errors, rules, secureTextEntry }) => {
@@ -46,8 +49,19 @@ export const FormItem: React.FC<FormItemProps> = ({ name, label, control, errors
     </View>
 }
 
+export const RedirectToForgotPasswordLink: React.FC<{ redirectToForgotPassword: () => void }> = ({ redirectToForgotPassword }) => {
+    return <TouchableOpacity
+        style={styles.redirectButton}
+        onPress={redirectToForgotPassword}
+    >
+        <Text>
+            Esqueci minha senha
+        </Text>
+    </TouchableOpacity>
+}
 
-export const LoginForm: React.FC<LoginFormProps> = ({ control, errors, isDirty, isValid, onSubmit, rules }) => {
+
+export const LoginForm: React.FC<LoginFormProps> = ({ control, errors, isDirty, isValid, onSubmit, rules, redirectTo }) => {
     return <View style={styles.form}>
         <FormItem
             control={control}
@@ -65,6 +79,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ control, errors, isDirty, 
             rules={rules['password']}
         />
         <View style={styles.actionsMenu}>
+            <RedirectToForgotPasswordLink redirectToForgotPassword={() => redirectTo('ForgotPassword')} />
             <Button title="Enviar" disabled={!isDirty || !isValid} onPress={onSubmit} />
         </View>
     </View>
@@ -78,6 +93,11 @@ const styles = StyleSheet.create({
         margin: 20,
         marginBottom: 5,
         marginLeft: 0,
+    },
+    redirectButton: {
+        alignItems: "center",
+        padding: 10,
+        marginRight: 20
     },
     form: {
         flex: 1,

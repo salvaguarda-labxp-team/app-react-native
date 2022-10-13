@@ -3,7 +3,7 @@ import { onAuthStateChanged, UserCredential } from 'firebase/auth';
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { useForm } from 'react-hook-form';
 import { LoginForm, LoginFormData } from '../components/form/LoginForm';
-import { LoginScreenProps } from '../definitions/ScreenPropsTypes.js';
+import { LoginScreenProps, RootStackParamsList } from '../definitions/ScreenPropsTypes.js';
 import { AuthenticationAPI } from '../lib/services';
 import { auth } from '../lib/utils/firebase';
 
@@ -32,7 +32,7 @@ const LoginPage = ({ navigation }: LoginScreenProps) => {
 
     const onSubmit = useCallback(async ({ username, password }: LoginFormData) => {
         try {
-            const response: UserCredential = await AuthenticationAPI.login(username, password);
+            await AuthenticationAPI.login(username, password);
         } catch (error: any) {
             if (error.code && (error as FirebaseError).code === 'auth/network-request-failed') {
                 alert("Erro de conexão. Por favor, tente novamente mais tarde.");
@@ -62,6 +62,7 @@ const LoginPage = ({ navigation }: LoginScreenProps) => {
                 isValid,
                 rules,
                 onSubmit: formOnSubmit,
+                redirectTo: navigation.replace
             }}
         />
     )
