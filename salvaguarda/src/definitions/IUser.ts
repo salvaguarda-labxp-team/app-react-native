@@ -1,6 +1,7 @@
 export type IUser = {
-	uid: string;
-	displayName: string | null;
+	_id: string;
+	createdAt: Date;
+	name: string | null;
 	email: string | null;
     photoURL: string | null;
 };
