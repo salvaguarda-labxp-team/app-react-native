@@ -5,4 +5,5 @@ export type IMessage = {
     createdAt: Date;
     text: string;
     user: User;
+    rid: string;
 };
