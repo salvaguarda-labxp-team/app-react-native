@@ -12,7 +12,7 @@ import ForgotPasswordScreen from "../views/ForgotPasswordScreen";
 
 const Stack = createNativeStackNavigator();
 
-export default () => (
+export default () :JSX.Element => (
     <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={LoginScreen}/>
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen}/>

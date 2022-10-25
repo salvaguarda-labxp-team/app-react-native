@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   }
 })
 
-export default function ForgotPasswordScreen({ navigation }: ForgotPasswordScreenProps) {
+export default function ForgotPasswordScreen({ navigation }: ForgotPasswordScreenProps) :JSX.Element {
 
   return (
     <View style={styles.container}>

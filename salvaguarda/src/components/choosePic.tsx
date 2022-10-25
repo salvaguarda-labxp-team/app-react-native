@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Image, View, Platform, Alert, SafeAreaView } from 'react-native';
+import React, { useState } from 'react';
+import { Image, View, Alert, SafeAreaView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialIcons } from '@expo/vector-icons';
 
 export default function ImagePickerExample(props) {
   const [image, setImage] = useState(null);
 
-  const openCamera = async () => {
+  const openCamera = async () :Promise<void> => {
     // Ask the user for the permission to access the camera
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
-    if (permissionResult.granted === false) {
+    if ( ! permissionResult.granted ) {
       alert("You've refused to allow this appp to access your camera!");
       return;
     }
@@ -27,13 +27,13 @@ export default function ImagePickerExample(props) {
     props.navigation.navigate("Add Image", {image: result.uri})
   }
 
-  const pickImage = async () => {
+  const pickImage = async () :Promise<void> => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      //allowsMultipleSelection: true,
-      //selectionLimit: 5,
-      //orderedSelection: true,
+      // allowsMultipleSelection: true,
+      // selectionLimit: 5,
+      // orderedSelection: true,
       aspect: [4, 3],
       quality: 1,
     });
@@ -46,7 +46,7 @@ export default function ImagePickerExample(props) {
   };
 
 
-  const save = async () => {
+  const save = async () :Promise<void> => {
     Alert.alert("Imagem adicionada!");
   }
 
