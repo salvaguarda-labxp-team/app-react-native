@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Image, View, Platform, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { Image, View, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialIcons } from '@expo/vector-icons';
 
-export default function ImagePickerExample(props) {
-  const [image, setImage] = useState(null);
+export default function ImagePickerExample(props) :JSX.Element {
+  const [ , setImage] = useState(null);
 
-  const openCamera = async () => {
+  const openCamera = async () :Promise<void> => {
     // Ask the user for the permission to access the camera
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
-    if (permissionResult.granted === false) {
+    if (!permissionResult.granted) {
       alert("You've refused to allow this appp to access your camera!");
       return;
     }
@@ -23,7 +23,7 @@ export default function ImagePickerExample(props) {
     }
   }
 
-  const save = async () => {
+  const save = async () :Promise<void> => {
     Alert.alert("Imagem adicionada!");
   }
 
