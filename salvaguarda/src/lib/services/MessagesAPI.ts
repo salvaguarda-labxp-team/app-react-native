@@ -1,9 +1,10 @@
-import { query, orderBy, collection, addDoc, getDocs, CollectionReference, where } from "firebase/firestore";
+import { query, orderBy, collection, addDoc, doc, getDocs, CollectionReference, where, updateDoc } from "firebase/firestore";
 import { db } from '../utils/firebase'
 import { IMessage } from "react-native-gifted-chat/lib/Models";
 
 export class MessagesAPI {
     static readonly chatsRef: CollectionReference = collection(db, "messages");
+    static readonly roomsRef: CollectionReference = collection(db, "rooms");
 
     static sendTextMessage({ _id, createdAt, text, user }: IMessage, roomId: string): void {
         addDoc(MessagesAPI.chatsRef, {
@@ -12,6 +13,10 @@ export class MessagesAPI {
             text,
             user,
             rid: roomId,
+        });
+
+        updateDoc(doc(this.roomsRef, roomId), {
+            lm: createdAt,
         });
     }
 

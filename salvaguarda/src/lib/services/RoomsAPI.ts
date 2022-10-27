@@ -1,4 +1,4 @@
-import { collection, addDoc, query, where, getDocs, CollectionReference, documentId } from "firebase/firestore";
+import { collection, addDoc, query, orderBy, where, getDocs, CollectionReference, documentId } from "firebase/firestore";
 import { db } from '../utils/firebase';
 import { IRoom, IUser, IRoomType } from "../../definitions";
 import { SubscriptionsAPI } from "./SubscriptionsAPI";
@@ -30,16 +30,17 @@ export class RoomsAPI {
             return [];
         }
 
-        const querySnapshotRooms = await getDocs(query(RoomsAPI.roomsRef, where(documentId(), "in", subscribedRooms)));
+        const roomsQuery = query(RoomsAPI.roomsRef, where(documentId(), "in", subscribedRooms));
+        const querySnapshotRooms = await getDocs(roomsQuery);
         return querySnapshotRooms.docs.map((doc) => ({
             _id: doc.id,
             createdAt: doc.data().createdAt,
-            lm: doc.data().lm,
+            lm: doc.data().lm.toDate(),
             name: doc.data().name,
             subject: doc.data().subject,
             type: doc.data().type,
             creatorId: doc.data().creatorId,
-        }));
+        })).sort((a, b) => b.lm - a.lm);
         
     }
 
