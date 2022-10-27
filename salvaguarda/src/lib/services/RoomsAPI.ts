@@ -7,9 +7,10 @@ export class RoomsAPI {
     static readonly roomsRef: CollectionReference = collection(db, "rooms");
     static readonly subscriptionsRef: CollectionReference = collection(db, "subscriptions");
 
-    static async createRoom(name: string, subject: string, type: IRoomType, creatorId: string, members: string[]): Promise<void> {
+    static async createRoom(name: string, subject: string, type: IRoomType, creatorId: string, members: string[]=[], qid?: string): Promise<string> {
         const creationTime = new Date();
         const room = await addDoc(RoomsAPI.roomsRef, {
+            qid,
             createdAt: creationTime,
             lm: creationTime,
             name,
@@ -20,6 +21,8 @@ export class RoomsAPI {
 
         members.push(creatorId);
         members.forEach((member) => SubscriptionsAPI.addSubscription(member, room.id));
+        
+        return room.id();
     }
 
     static async getUserRooms(uid: string): Promise<IRoom[]> {
