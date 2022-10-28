@@ -1,15 +1,14 @@
 import React from 'react';
 import { Text, View, TextInput, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import { Controller, Control } from "react-hook-form";
-import { Link } from '@react-navigation/native';
 import { RootStackParamsList } from '../../definitions';
 
-export type LoginFormData = {
+export interface LoginFormData  {
     username: string;
     password: string;
 }
 
-export type FormItemProps = {
+export interface FormItemProps {
     label: string;
     name: "username" | "password";
     control: Control<LoginFormData>;
@@ -18,7 +17,7 @@ export type FormItemProps = {
     rules: any;
 }
 
-export type LoginFormProps = {
+export interface LoginFormProps {
     control: Control<LoginFormData>,
     errors: any,
     isDirty: boolean,
@@ -45,7 +44,7 @@ export const FormItem: React.FC<FormItemProps> = ({ name, label, control, errors
             )}
             name={name}
         />}
-        {errors[name] && <Text>{errors[name].message}</Text>}
+        { errors[name] && <Text>{errors[name].message}</Text>}
     </View>
 }
 
@@ -68,7 +67,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ control, errors, isDirty, 
             label={"Username"}
             name={"username"}
             errors={errors}
-            rules={rules['username']}
+            rules={rules.username}
         />
         <FormItem
             control={control}
@@ -76,7 +75,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ control, errors, isDirty, 
             name={"password"}
             secureTextEntry={true}
             errors={errors}
-            rules={rules['password']}
+            rules={rules.password}
         />
         <View style={styles.actionsMenu}>
             <RedirectToForgotPasswordLink redirectToForgotPassword={() => redirectTo('ForgotPassword')} />
@@ -85,7 +84,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({ control, errors, isDirty, 
     </View>
 }
 
-const formWidth = 330;
 
 const styles = StyleSheet.create({
     label: {

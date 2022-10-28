@@ -6,7 +6,7 @@ import { auth } from '../lib/utils/firebase.js';
 import { AuthenticationAPI } from '../lib/services/AuthenticationAPI';
 import { RegisterScreenProps } from '../definitions/ScreenPropsTypes.js';
 
-const RegisterScreen = ({ navigation } : RegisterScreenProps) => {
+const RegisterScreen = ({ navigation } : RegisterScreenProps) :JSX.Element => {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [imageUrl, setImageUrl] = useState('');
@@ -20,7 +20,7 @@ const RegisterScreen = ({ navigation } : RegisterScreenProps) => {
         });
     }, []);
 
-    const register = async () => {
+    const register = async () :Promise<void> => {
         try {
             await AuthenticationAPI.register(email, password, name, imageUrl);
         } catch (error: any) {

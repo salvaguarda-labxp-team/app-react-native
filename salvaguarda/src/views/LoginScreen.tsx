@@ -1,13 +1,13 @@
 import { FirebaseError } from 'firebase/app';
-import { onAuthStateChanged, UserCredential } from 'firebase/auth';
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import { onAuthStateChanged } from 'firebase/auth';
+import React, { useEffect, useMemo, useCallback } from 'react'
 import { useForm } from 'react-hook-form';
 import { LoginForm, LoginFormData } from '../components/form/LoginForm';
-import { LoginScreenProps, RootStackParamsList } from '../definitions/ScreenPropsTypes.js';
+import { LoginScreenProps } from '../definitions/ScreenPropsTypes.js';
 import { AuthenticationAPI } from '../lib/services';
 import { auth } from '../lib/utils/firebase';
 
-const LoginPage = ({ navigation }: LoginScreenProps) => {
+const LoginPage = ({ navigation }: LoginScreenProps) :JSX.Element => {
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
@@ -34,10 +34,10 @@ const LoginPage = ({ navigation }: LoginScreenProps) => {
         try {
             await AuthenticationAPI.login(username, password);
         } catch (error: any) {
-            if (error.code && (error as FirebaseError).code === 'auth/network-request-failed') {
+            if ((error as FirebaseError)?.code === 'auth/network-request-failed') {
                 alert("Erro de conexão. Por favor, tente novamente mais tarde.");
             }
-            if (error.code && (error as FirebaseError).code) {
+            if ((error as FirebaseError)?.code) {
                 alert("Username ou senha inválidos. Por favor, confira os campos inseridos e tente novamente.");
             }
         }
