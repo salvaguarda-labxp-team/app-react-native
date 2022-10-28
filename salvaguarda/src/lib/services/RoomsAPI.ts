@@ -22,7 +22,7 @@ export class RoomsAPI {
         members.push(creatorId);
         members.forEach((member) => SubscriptionsAPI.addSubscription(member, room.id));
         
-        return room.id();
+        return room.id;
     }
 
     static async getUserRooms(uid: string): Promise<IRoom[]> {

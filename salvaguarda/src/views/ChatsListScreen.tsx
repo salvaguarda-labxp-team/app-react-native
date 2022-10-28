@@ -6,11 +6,11 @@ import { onAuthStateChanged } from "firebase/auth";
 import { MaterialIcons } from '@expo/vector-icons';
 import { Avatar } from 'react-native-elements';
 import { AuthenticationAPI, RoomsAPI } from '../lib/services';
-import { ChatListScreenProps, IRoom } from '../definitions';
+import { ChatsListScreenProps, IRoom } from '../definitions';
 import { auth } from '../lib/utils/firebase';
 import { UsersAPI } from '../lib/services/UsersAPI';
 
-const ChatListScreen = ({ navigation }: ChatListScreenProps) => {
+const ChatsListScreen = ({ navigation }: ChatsListScreenProps) => {
     const [rooms, setRooms] = useState<IRoom[]>([]);
     const [question, setQuestion] = useState('');
     const [username, setUsername] = useState('');
@@ -96,18 +96,6 @@ const ChatListScreen = ({ navigation }: ChatListScreenProps) => {
             )
         });
     }, []);
-  
-    // const onSend = useCallback((messages: IMessage[] = []) => {
-    //   setMessages(previousMessages => GiftedChat.append(previousMessages, messages));
-    //   const {
-    //     _id,
-    //     createdAt,
-    //     text,
-    //     user,
-    //   } = messages[0];
-
-    //   MessagesAPI.sendTextMessage({ _id, createdAt, text, user });
-    // }, [])
 
     return (
         <View style={styles.container}>
@@ -185,7 +173,7 @@ const ChatListScreen = ({ navigation }: ChatListScreenProps) => {
                         <MaterialIcons name='person-outline' />
                         <ListItem.Content>
                             <ListItem.Title>{item.name}</ListItem.Title>
-                            <ListItem.Subtitle>{item.subject}</ListItem.Subtitle>
+                            <ListItem.Subtitle>{item.type}</ListItem.Subtitle>
                         </ListItem.Content>
                     </ListItem>
                 ))
@@ -200,7 +188,7 @@ const ChatListScreen = ({ navigation }: ChatListScreenProps) => {
     );
 }
 
-export default ChatListScreen;
+export default ChatsListScreen;
 
 const styles = StyleSheet.create({
     centeredView: {

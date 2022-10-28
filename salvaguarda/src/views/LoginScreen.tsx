@@ -13,7 +13,7 @@ const LoginPage = ({ navigation }: LoginScreenProps) => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 // Usuário logou
-                navigation.replace("ChatList");
+                navigation.replace("Menu");
             } else {
                 // Usuário deslogou
                 navigation.canGoBack() && navigation.popToTop();

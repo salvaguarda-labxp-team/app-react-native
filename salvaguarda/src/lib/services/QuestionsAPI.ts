@@ -18,7 +18,7 @@ export class QuestionsAPI {
             status: "pending",
         });
 
-        const rid: string = await RoomsAPI.createRoom(title, subject, "private", creatorId, [], question.id());
+        const rid: string = await RoomsAPI.createRoom(title, subject, "private", creatorId, [], question.id);
         updateDoc(question, { rid });
     }
 
@@ -35,10 +35,11 @@ export class QuestionsAPI {
             rid: doc.data().rid,
             createdAt: doc.data().createdAt,
             title: doc.data().title,
-            description: doc.data.description,
+            description: doc.data().description,
             subject: doc.data().subject,
             type: doc.data().type,
             creatorId: doc.data().creatorId,
+            status: doc.data().status,
         }));
     }
 
@@ -53,10 +54,11 @@ export class QuestionsAPI {
             rid: doc.data().rid,
             createdAt: doc.data().createdAt,
             title: doc.data().title,
-            description: doc.data.description,
+            description: doc.data().description,
             subject: doc.data().subject,
             type: doc.data().type,
             creatorId: doc.data().creatorId,
+            status: doc.data().status,
         }));
     }
 

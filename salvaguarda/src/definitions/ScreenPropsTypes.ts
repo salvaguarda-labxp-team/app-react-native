@@ -8,11 +8,16 @@ export type RootStackParamsList = {
         roomName: string;
     };
     ForgotPassword: undefined;
-    ChatList: undefined;
+    ChatsList: undefined;
+    QuestionsList: undefined;
+    Menu: undefined;
+    Test: undefined;
 };
 
 export type LoginScreenProps = NativeStackScreenProps<RootStackParamsList, 'Login'>;
 export type ForgotPasswordScreenProps = NativeStackScreenProps<RootStackParamsList, 'ForgotPassword'>;
 export type RegisterScreenProps = NativeStackScreenProps<RootStackParamsList, 'Register'>;
 export type ChatScreenProps = NativeStackScreenProps<RootStackParamsList, 'Chat'>;
-export type ChatListScreenProps = NativeStackScreenProps<RootStackParamsList, 'ChatList'>;
+export type ChatsListScreenProps = NativeStackScreenProps<RootStackParamsList, 'ChatsList'>;
+export type QuestionsListScreenProps = NativeStackScreenProps<RootStackParamsList, 'QuestionsList'>;
+export type MenuScreenProps = NativeStackScreenProps<RootStackParamsList, 'Menu'>;
