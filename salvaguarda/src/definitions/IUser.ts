@@ -1,6 +1,7 @@
-export interface IUser {
-	uid: string;
-	displayName: string | null;
+export type IUser = {
+	_id: string;
+	createdAt: Date;
+	name: string | null;
 	email: string | null;
     photoURL: string | null;
 };
