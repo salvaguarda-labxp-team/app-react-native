@@ -20,6 +20,13 @@ The current test-runner is `jest-expo`. To run all test suites, run
 ```
 npm test
 ```
+
+# Formatting
+Run the following command to automatically format all source files.
+```
+npm run prettier-write-all
+```
+
 # Running
 Run this command to start tunnel mode.
 ```
