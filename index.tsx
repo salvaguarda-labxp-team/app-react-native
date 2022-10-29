@@ -11,4 +11,4 @@ export default () => (
   <SafeAreaView>
     <Text>Hello World!</Text>
   </SafeAreaView>
-)
+);
