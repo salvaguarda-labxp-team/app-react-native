@@ -8,7 +8,9 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "test": "jest"
+    "test": "jest",
+    "prettier-check-all": "npx prettier --check .",
+    "prettier-write-all": "npx prettier --write ."
   },
   "dependencies": {
     "@expo/metro-config": "^0.4.0",
