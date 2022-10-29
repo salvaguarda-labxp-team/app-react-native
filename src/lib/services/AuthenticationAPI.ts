@@ -1,5 +1,4 @@
-import { IUser } from '../../definitions/IUser';
-import { signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, UserCredential } from "firebase/auth";
+import { User, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, UserCredential } from "firebase/auth";
 import { auth } from '../utils/firebase.js';
 
 export class AuthenticationAPI {
@@ -21,7 +20,7 @@ export class AuthenticationAPI {
         });
     };
 
-    static getCurrentUser(): IUser | null {
+    static getCurrentUser(): Pick<User, "uid" | "displayName" | "email" | "photoURL"> | null {
         if (!auth.currentUser) return null;
         const { uid, displayName, email, photoURL } = auth.currentUser;
         

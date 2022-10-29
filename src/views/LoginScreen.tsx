@@ -13,7 +13,7 @@ const LoginPage = ({ navigation }: LoginScreenProps) :JSX.Element => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 // Usuário logou
-                navigation.replace("Chat");
+                navigation.replace("Menu");
             } else {
                 // Usuário deslogou
                 navigation.canGoBack() && navigation.popToTop();

@@ -9,12 +9,15 @@ import { AuthenticationAPI, MessagesAPI } from '../lib/services';
 import { ChatScreenProps, IUser } from '../definitions';
 import { auth } from '../lib/utils/firebase';
 
-const ChatScreen = ({ navigation }: ChatScreenProps) => {
+const ChatScreen = ({ route, navigation }: ChatScreenProps) => {
+    const { roomId, roomName } = route.params;
     const [messages, setMessages] = useState<IMessage[]>([]);
 
     useLayoutEffect(() => {
         const fetchData = async () => {
-            setMessages(await MessagesAPI.getAllMessages());
+            setTimeout(async () => {
+                setMessages(await MessagesAPI.getMessagesFromRoom(roomId));
+            }, 1000);
         }
         
         fetchData().catch(console.error);
@@ -28,8 +31,8 @@ const ChatScreen = ({ navigation }: ChatScreenProps) => {
         });
     }, []);
 
-    const signOut = async () => {
-        await AuthenticationAPI.signOut();
+    const goToChatList = () => {
+        navigation.navigate("ChatList");
     };
   
     const onSend = useCallback((messages: IMessage[] = []) => {
@@ -41,12 +44,21 @@ const ChatScreen = ({ navigation }: ChatScreenProps) => {
         user,
       } = messages[0];
 
-      MessagesAPI.sendTextMessage({ _id, createdAt, text, user });
+      MessagesAPI.sendTextMessage({ _id, createdAt, text, user }, roomId);
     }, [])
 
     useLayoutEffect(() => {
         navigation.setOptions({
             headerLeft: () => (
+                <TouchableOpacity style={{
+                    marginRight: 30
+                }}
+                    onPress={goToChatList}
+                >
+                    <MaterialIcons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+            ),
+            headerRight: () => (
                 <View style={{
                     marginLeft: 20
                 }}>
@@ -57,15 +69,6 @@ const ChatScreen = ({ navigation }: ChatScreenProps) => {
                         }}
                     />
                 </View>
-            ),
-            headerRight: () => (
-                <TouchableOpacity style={{
-                    marginRight: 30
-                }}
-                    onPress={signOut}
-                >
-                    <MaterialIcons name="logout" size={24} color="black" />
-                </TouchableOpacity>
             )
         });
     }, []);

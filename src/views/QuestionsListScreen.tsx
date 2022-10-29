@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import ChoosePic from "../components/choosePic"
+import { Text, View, StyleSheet } from 'react-native';
 
 
 const styles = StyleSheet.create({
@@ -12,11 +11,10 @@ const styles = StyleSheet.create({
   }
 })
 
-export default function Home(props) :JSX.Element {
-  
+export default function QuestionsListScreen() {
   return(
     <View style={styles.container}>
-      <ChoosePic {...props} />
+      <Text>Alo</Text>
     </View>
   );
 }
