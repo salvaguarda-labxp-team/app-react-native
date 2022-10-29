@@ -2,3 +2,22 @@
 assets
 
 package-lock.json
+
+# Below is a copy of .gitignore, since Prettier currently
+# does not support multiple ignore files
+# See https://github.com/prettier/prettier/issues/8048
+
+node_modules/
+.expo/
+dist/
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+
+# macOS
+**/.DS_Store

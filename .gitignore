@@ -1,3 +1,7 @@
+# When updating this file, please also update .prettierignore, 
+# since Prettier currently does not support multiple ignore files
+# See https://github.com/prettier/prettier/issues/8048
+
 node_modules/
 .expo/
 dist/
