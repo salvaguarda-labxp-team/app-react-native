@@ -9,12 +9,14 @@ import {
   Menu,
   ChatsListScreen,
   ForgotPasswordScreen,
+  ChooseImage,
+  AddImage
 } from "../views";
 
 const Stack = createNativeStackNavigator();
 
 export default (): JSX.Element => (
-  <Stack.Navigator initialRouteName="Login">
+  <Stack.Navigator initialRouteName="Select Pics">
     <Stack.Screen name="Login" component={LoginScreen} />
     <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
     <Stack.Screen name="Register" component={RegisterScreen} />
@@ -24,5 +26,7 @@ export default (): JSX.Element => (
       component={Menu}
       options={{ headerShown: false }}
     />
+    <Stack.Screen name="Select Pics" component={ChooseImage} />
+    <Stack.Screen name="Add Image" component={AddImage} options={ {headerShown: false, gestureEnabled: false} } />
   </Stack.Navigator>
 );

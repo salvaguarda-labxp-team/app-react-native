@@ -4,7 +4,7 @@ import * as ImagePicker from "expo-image-picker";
 import { MaterialIcons } from "@expo/vector-icons";
 
 export default function ImagePickerExample(props) {
-  const [image, setImage] = useState(null);
+  const [images, setImages] = useState(null);
 
   const openCamera = async (): Promise<void> => {
     // Ask the user for the permission to access the camera
@@ -21,7 +21,7 @@ export default function ImagePickerExample(props) {
     });
 
     if (!result.cancelled) {
-      setImage(result.uri);
+      setImages(result.uri);
     }
 
     props.navigation.navigate("Add Image", { image: result.uri });
@@ -31,17 +31,21 @@ export default function ImagePickerExample(props) {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      // allowsMultipleSelection: true,
-      // selectionLimit: 5,
-      // orderedSelection: true,
-      aspect: [4, 3],
+      allowsMultipleSelection: true,
+      selectionLimit: 5,
+      orderedSelection: true,
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.cancelled) {
-      setImage(result.uri);
+      let images: string[] = [];
+
+      result.selected.forEach( (image) =>
+        images.push(image.uri)
+      )
+      setImages(images);
+
+      props.navigation.navigate("Add Image", { images: images });
     }
   };
 
@@ -51,12 +55,6 @@ export default function ImagePickerExample(props) {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ flex: 1, justifyContent: "center" }}>
-        {image && (
-          <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
-        )}
-      </View>
-
       <View
         style={{
           position: "absolute",

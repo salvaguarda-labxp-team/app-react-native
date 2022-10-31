@@ -2,51 +2,85 @@ import React, { useState } from "react";
 import { Image, View, Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { MaterialIcons } from "@expo/vector-icons";
+import { StatusBar } from "expo-status-bar";
 
 export default function ImagePickerExample(props): JSX.Element {
-  const [, setImage] = useState(null);
+  const [selectedImages, setSelectedImages] = useState(props.route.params.images);
 
-  const openCamera = async (): Promise<void> => {
-    // Ask the user for the permission to access the camera
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+  // const openCamera = async (): Promise<void> => {
+  //   // Ask the user for the permission to access the camera
+  //   const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
-    if (!permissionResult.granted) {
-      alert("You've refused to allow this appp to access your camera!");
-      return;
-    }
+  //   if (!permissionResult.granted) {
+  //     alert("You've refused to allow this appp to access your camera!");
+  //     return;
+  //   }
 
-    const result = await ImagePicker.launchCameraAsync();
+  //   const result = await ImagePicker.launchCameraAsync();
 
-    if (!result.cancelled) {
-      setImage(result.uri);
-    }
-  };
+  //   if (!result.cancelled) {
+  //     setImage(result.uri);
+  //   }
+  // };
 
   const save = async (): Promise<void> => {
     Alert.alert("Imagem adicionada!");
   };
 
-  return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      {props.route.params.image && (
-        <Image
-          source={{ uri: props.route.params.image }}
-          style={{ width: 100, height: 100 }}
-        />
-      )}
+  const test = async (): Promise<void> => {
+   console.log(selectedImages);
+  };
 
-      <View style={{ position: "absolute", bottom: 20, left: 20 }}>
+  const addImage = async (): Promise<void> => {
+
+    let images: any[] = [];
+
+      selectedImages.forEach( (newImage: string) =>
+        images.push(
+          <View>
+            <Image
+                      source={{ uri: newImage }}
+                      style={{ width: '10%', height: '10%'}}
+                    />
+          </View>
+        )
+      )
+      setSelectedImages(images);
+  };
+
+  return (
+    <View style={{ flex: 1 }}>
+      <StatusBar hidden />
+      
+      
+      {props.route.params.images[0] && (
+        <Image
+          source={{ uri: props.route.params.images[0] }}
+          style={{ width: '100%', height: '100%', shadowOpacity: 0 }}
+        />
+      
+      )}
+      <View style={{ position: "absolute", top: 20, left: 20, shadowOpacity: 1 }}>
+        <MaterialIcons name="cancel" size={40} color="white" onPress={test} />
+      </View>
+
+      <View style={{ position: "absolute", top: 20, right: 20, shadowOpacity: 1 }}>
+        <MaterialIcons name="restore-from-trash" size={40} color="white" />
+      </View>
+
+      <View style={{ position: "absolute", bottom: 0, width: '100%', height: '10%', backgroundColor: 'rgba(0,0,0,0.4)' }}>
+      </View>
+
+
+      {/* <View style={{ position: "absolute", bottom: 20, left: 20 }}>
         <MaterialIcons
           name="add-box"
           size={30}
           color="black"
           onPress={openCamera}
         />
-      </View>
+      </View> */}
 
-      <View style={{ position: "absolute", bottom: 20, right: 20 }}>
-        <MaterialIcons name="send" size={24} color="black" />
-      </View>
     </View>
   );
 }
