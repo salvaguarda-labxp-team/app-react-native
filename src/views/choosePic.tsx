@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from "react";
-import { Image, View, Alert, SafeAreaView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { MaterialIcons } from "@expo/vector-icons";
 import { MediaInput } from "../components/chat/MediaInput";
 
-export default function ImagePickerExample(props) {
+const ImagePickerExample: React.FC<{
+  navigation: any;
+}> = (props) => {
   const [images, setImages] = useState<string[]>([]);
 
   const openCamera = useCallback(async (): Promise<void> => {
@@ -23,7 +23,7 @@ export default function ImagePickerExample(props) {
 
     if (!result.cancelled) {
       setImages([result.uri]);
-      props.navigation.navigate("Add Image", { images: [result.uri] });
+      props.navigation.navigate("Add Image", { images });
     }
   }, [
     ImagePicker.requestCameraPermissionsAsync,
@@ -61,4 +61,6 @@ export default function ImagePickerExample(props) {
       onMicClick={() => {}}
     />
   );
-}
+};
+
+export default ImagePickerExample
