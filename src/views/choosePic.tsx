@@ -34,7 +34,7 @@ export default function ImagePickerExample(props) {
       allowsMultipleSelection: true,
       selectionLimit: 5,
       orderedSelection: true,
-      quality: 1,
+      quality: 0.1,
     });
 
     if (!result.cancelled) {
