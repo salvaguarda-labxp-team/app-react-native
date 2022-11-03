@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Image, View, Alert, SafeAreaView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { MaterialIcons } from "@expo/vector-icons";
+import { MediaInput } from "../components/chat/MediaInput";
 
 export default function ImagePickerExample(props) {
-  const [images, setImages] = useState(null);
+  const [images, setImages] = useState<string[]>([]);
 
-  const openCamera = async (): Promise<void> => {
+  const openCamera = useCallback(async (): Promise<void> => {
     // Ask the user for the permission to access the camera
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
@@ -21,15 +22,18 @@ export default function ImagePickerExample(props) {
     });
 
     if (!result.cancelled) {
-      setImages(result.uri);
+      setImages([result.uri]);
+      props.navigation.navigate("Add Image", { images: [result.uri] });
     }
+  }, [
+    ImagePicker.requestCameraPermissionsAsync,
+    ImagePicker.launchCameraAsync,
+    setImages,
+    props.navigation.navigate,
+  ]);
 
-    props.navigation.navigate("Add Image", { image: result.uri });
-  };
-
-  const pickImage = async (): Promise<void> => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
+  const pickImage = useCallback(async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsMultipleSelection: true,
       selectionLimit: 5,
@@ -38,54 +42,23 @@ export default function ImagePickerExample(props) {
     });
 
     if (!result.cancelled) {
-      let images: string[] = [];
+      const images: string[] = [];
 
-      result.selected.forEach( (image) =>
-        images.push(image.uri)
-      )
+      result.selected.forEach((image) => images.push(image.uri));
       setImages(images);
 
-      props.navigation.navigate("Add Image", { images: images });
+      props.navigation.navigate("Add Image", { images });
     }
-  };
-
-  const save = async (): Promise<void> => {
-    Alert.alert("Imagem adicionada!");
-  };
+  }, [setImages, props.navigation, ImagePicker.launchImageLibraryAsync]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View
-        style={{
-          position: "absolute",
-          bottom: 10,
-          left: 50,
-          flexDirection: "row",
-        }}
-      >
-        <MaterialIcons
-          name="camera-alt"
-          size={30}
-          color="black"
-          onPress={openCamera}
-          style={{ margin: 5 }}
-        />
-
-        <MaterialIcons
-          name="add-to-photos"
-          size={30}
-          color="black"
-          onPress={pickImage}
-          style={{ margin: 5 }}
-        />
-
-        <MaterialIcons
-          name="mic"
-          size={30}
-          color="black"
-          style={{ margin: 5 }}
-        />
-      </View>
-    </SafeAreaView>
+    <MediaInput
+      navigation={props.navigation}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      onAddClick={pickImage}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      onCameraClick={openCamera}
+      onMicClick={() => {}}
+    />
   );
 }
