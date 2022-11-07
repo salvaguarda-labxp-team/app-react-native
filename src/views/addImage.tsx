@@ -41,7 +41,14 @@ const ImageSelectorControl: React.FC<ImageSelectorControlProps> = ({
       selectedImagesURI.map((newImage: string, index: number) => (
         <View
           key={index}
-          style={{ width: "19%", height: "100%", marginRight: "1.25%" }}
+          style={{
+            width: "19%",
+            height: "100%",
+            marginRight: "1.25%",
+            ...(index === currentImageIndex
+              ? { borderColor: "cyan", borderWidth: 2, borderRadius: 5 }
+              : {}),
+          }}
         >
           <Image
             source={{ uri: newImage }}
@@ -49,7 +56,7 @@ const ImageSelectorControl: React.FC<ImageSelectorControlProps> = ({
           />
         </View>
       )),
-    [selectedImagesURI]
+    [selectedImagesURI, currentImageIndex]
   );
 
   const controlBarItems = useMemo(() => {
@@ -158,10 +165,11 @@ const DeviceImagePicker = (props: any): JSX.Element => {
     [setCurrentImageIndex]
   );
 
-  const cancelSelection = (): void => {
+  const cancelSelection = useCallback(() => {
     props.navigation.goBack();
-  };
-  const deleteSelection = async (): Promise<void> => {
+  }, [props.navigation?.goBack]);
+
+  const deleteSelection = useCallback(() => {
     const nextImageIndex = currentImageIndex === 0 ? 0 : currentImageIndex - 1;
 
     setSelectedImages(
@@ -169,17 +177,23 @@ const DeviceImagePicker = (props: any): JSX.Element => {
     );
     setCurrentImageIndex(nextImageIndex);
     if (selectedImages.length === 1) cancelSelection();
-  };
+  }, [
+    setSelectedImages,
+    setCurrentImageIndex,
+    cancelSelection,
+    selectedImages,
+    currentImageIndex,
+  ]);
 
   const pickImage = useCallback(() => {
     // TODO implement open image selection
     console.log("oi");
   }, []);
 
-  useEffect(
-    () => setSelectedImages(props.route.params.images),
-    [props?.route?.params?.images]
-  );
+  useEffect(() => {
+    setSelectedImages(props.route.params.images);
+    console.log(props.route.params.images);
+  }, [props?.route?.params?.images]);
 
   return (
     <ImageSelectorControl

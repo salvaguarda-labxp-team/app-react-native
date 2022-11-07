@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { MediaInput } from "../components/chat/MediaInput";
 
@@ -23,7 +23,6 @@ const ImagePickerExample: React.FC<{
 
     if (!result.cancelled) {
       setImages([result.uri]);
-      props.navigation.navigate("Add Image", { images });
     }
   }, [
     ImagePicker.requestCameraPermissionsAsync,
@@ -47,9 +46,12 @@ const ImagePickerExample: React.FC<{
       result.selected.forEach((image) => images.push(image.uri));
       setImages(images);
 
-      props.navigation.navigate("Add Image", { images });
     }
   }, [setImages, props.navigation, ImagePicker.launchImageLibraryAsync]);
+
+  useEffect(() => {
+    props.navigation.navigate("Add Image", { images });
+  }, [images]);
 
   return (
     <MediaInput
@@ -63,4 +65,4 @@ const ImagePickerExample: React.FC<{
   );
 };
 
-export default ImagePickerExample
+export default ImagePickerExample;
