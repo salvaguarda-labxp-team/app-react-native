@@ -22,23 +22,30 @@ const ImageCollector: React.FC<{
   return (
     <View
       style={{
-        width: "19%",
-        height: "100%",
-        marginRight: "1.25%",
-        backgroundColor: "rgba(0,0,0,0.8)",
+        width: "100%",
+        height: 75,
+        marginRight: 0,
+        padding: 15,
+        backgroundColor: "rgba(0,0,0,0.2)",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "space-between",
+        position: "absolute",
+        left: 0,
+        bottom: 75,
+        display: "flex",
+        flexDirection: "row",
       }}
     >
       <MaterialIcons
-        name="add-to-photos"
-        size={40}
+        
+        name="image"
+        size={50}
         color="white"
         onPress={selectImageFromGallery}
       />
       <MaterialIcons
         name="camera-alt"
-        size={40}
+        size={50}
         color="white"
         onPress={selectImageFromCamera}
       />
@@ -94,7 +101,7 @@ const ImageSelectorControl: React.FC<ImageSelectorControlProps> = ({
   );
 
   const controlBarItems = useMemo(() => {
-    return controlBarImageViews.length > 5
+    return controlBarImageViews.length >= 5
       ? controlBarImageViews
       : [
           ...controlBarImageViews,
@@ -103,7 +110,7 @@ const ImageSelectorControl: React.FC<ImageSelectorControlProps> = ({
             {...{ selectImageFromGallery, selectImageFromCamera }}
           />,
         ];
-  }, [controlBarImageViews, selectImageFromCamera, selectImageFromGallery]);
+  }, [controlBarImageViews.length, selectImageFromCamera, selectImageFromGallery]);
 
   return (
     <View style={{ flex: 1 }}>
