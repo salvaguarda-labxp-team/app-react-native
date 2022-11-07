@@ -130,7 +130,7 @@ const ImageSelectorControl: React.FC<ImageSelectorControlProps> = ({
   );
 };
 
-const ImagePickerExample = (props: any): JSX.Element => {
+const DeviceImagePicker = (props: any): JSX.Element => {
   // const openCamera = async (): Promise<void> => {
   //   // Ask the user for the permission to access the camera
   //   const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
@@ -158,9 +158,8 @@ const ImagePickerExample = (props: any): JSX.Element => {
     [setCurrentImageIndex]
   );
 
-  const cancelSelection = async (): Promise<void> => {
-    // TODO implement selection cancelation
-    console.log(selectedImages);
+  const cancelSelection = (): void => {
+    props.navigation.goBack();
   };
   const deleteSelection = async (): Promise<void> => {
     const nextImageIndex = currentImageIndex === 0 ? 0 : currentImageIndex - 1;
@@ -168,8 +167,8 @@ const ImagePickerExample = (props: any): JSX.Element => {
     setSelectedImages(
       selectedImages.filter((_, index) => index !== currentImageIndex)
     );
-
     setCurrentImageIndex(nextImageIndex);
+    if (selectedImages.length === 1) cancelSelection();
   };
 
   const pickImage = useCallback(() => {
@@ -194,4 +193,4 @@ const ImagePickerExample = (props: any): JSX.Element => {
   );
 };
 
-export default ImagePickerExample;
+export default DeviceImagePicker;
