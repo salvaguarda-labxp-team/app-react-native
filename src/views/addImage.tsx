@@ -8,18 +8,51 @@ import * as ImagePicker from "expo-image-picker";
 interface ImageSelectorControlProps {
   onCancelClick: Function;
   onDeleteClick: Function;
-  onPickImageClick: Function;
+  selectImageFromCamera: Function;
+  selectImageFromGallery: Function;
   onSwiperIndexChange: Function;
   selectedImagesURI: string[];
   currentImageIndex: number;
 }
+
+const ImageCollector: React.FC<{
+  selectImageFromCamera: () => void;
+  selectImageFromGallery: () => void;
+}> = ({ selectImageFromCamera, selectImageFromGallery }) => {
+  return (
+    <View
+      style={{
+        width: "19%",
+        height: "100%",
+        marginRight: "1.25%",
+        backgroundColor: "rgba(0,0,0,0.8)",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <MaterialIcons
+        name="add-to-photos"
+        size={40}
+        color="white"
+        onPress={selectImageFromGallery}
+      />
+      <MaterialIcons
+        name="camera-alt"
+        size={40}
+        color="white"
+        onPress={selectImageFromCamera}
+      />
+    </View>
+  );
+};
 
 const ImageSelectorControl: React.FC<ImageSelectorControlProps> = ({
   onCancelClick,
   onDeleteClick,
   selectedImagesURI,
   onSwiperIndexChange,
-  onPickImageClick,
+  selectImageFromGallery,
+  selectImageFromCamera,
   currentImageIndex,
 }: any) => {
   const swiperImageViews = useMemo(
@@ -65,26 +98,12 @@ const ImageSelectorControl: React.FC<ImageSelectorControlProps> = ({
       ? controlBarImageViews
       : [
           ...controlBarImageViews,
-          <View
+          <ImageCollector
             key={controlBarImageViews.length}
-            style={{
-              width: "19%",
-              height: "100%",
-              marginRight: "1.25%",
-              backgroundColor: "rgba(0,0,0,0.8)",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <MaterialIcons
-              name="add-to-photos"
-              size={40}
-              color="white"
-              onPress={onPickImageClick}
-            />
-          </View>,
+            {...{ selectImageFromGallery, selectImageFromCamera }}
+          />,
         ];
-  }, [controlBarImageViews, onPickImageClick]);
+  }, [controlBarImageViews, selectImageFromCamera, selectImageFromGallery]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -203,15 +222,35 @@ const DeviceImagePicker = (props: any): JSX.Element => {
     }
   }, [
     selectedImages.length,
+    selectedImages,
     setSelectedImages,
     ImagePicker.launchImageLibraryAsync,
     ImagePicker.MediaTypeOptions.Images,
   ]);
 
-  const pickImage = useCallback(async () => {
-    await selectImageFromGallery()
+  const selectImageFromCamera = useCallback(async () => {
+    // Ask the user for the permission to access the camera
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (!permissionResult.granted) {
+      alert("You've refused to allow this appp to access your camera!");
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setSelectedImages([...selectedImages, result.uri]);
+    }
   }, [
-    selectImageFromGallery,
+    ImagePicker.requestCameraPermissionsAsync,
+    ImagePicker.launchCameraAsync,
+    setSelectedImages,
+    selectedImages,
+    props.navigation.navigate,
   ]);
 
   useEffect(() => {
@@ -223,7 +262,8 @@ const DeviceImagePicker = (props: any): JSX.Element => {
     <ImageSelectorControl
       onCancelClick={cancelSelection}
       onDeleteClick={deleteSelection}
-      onPickImageClick={pickImage}
+      selectImageFromCamera={selectImageFromCamera}
+      selectImageFromGallery={selectImageFromGallery}
       onSwiperIndexChange={onSwiperIndexChange}
       selectedImagesURI={selectedImages}
       currentImageIndex={currentImageIndex}
