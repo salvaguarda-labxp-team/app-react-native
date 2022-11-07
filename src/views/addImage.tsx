@@ -3,6 +3,7 @@ import { Image, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import Swiper from "react-native-swiper";
+import * as ImagePicker from "expo-image-picker";
 
 interface ImageSelectorControlProps {
   onCancelClick: Function;
@@ -185,10 +186,33 @@ const DeviceImagePicker = (props: any): JSX.Element => {
     currentImageIndex,
   ]);
 
-  const pickImage = useCallback(() => {
-    // TODO implement open image selection
-    console.log("oi");
-  }, []);
+  const selectImageFromGallery = useCallback(async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsMultipleSelection: true,
+      selectionLimit: 5 - selectedImages.length,
+      orderedSelection: true,
+      quality: 0.1,
+    });
+
+    if (!result.cancelled) {
+      setSelectedImages([
+        ...selectedImages,
+        ...result.selected.map((image) => image.uri),
+      ]);
+    }
+  }, [
+    selectedImages.length,
+    setSelectedImages,
+    ImagePicker.launchImageLibraryAsync,
+    ImagePicker.MediaTypeOptions.Images,
+  ]);
+
+  const pickImage = useCallback(async () => {
+    await selectImageFromGallery()
+  }, [
+    selectImageFromGallery,
+  ]);
 
   useEffect(() => {
     setSelectedImages(props.route.params.images);
