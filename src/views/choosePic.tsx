@@ -45,12 +45,13 @@ const ImagePickerExample: React.FC<{
 
       result.selected.forEach((image) => images.push(image.uri));
       setImages(images);
-
     }
   }, [setImages, props.navigation, ImagePicker.launchImageLibraryAsync]);
 
+  useEffect(() => setImages([]), []);
+
   useEffect(() => {
-    props.navigation.navigate("Add Image", { images });
+    if (images.length > 0) props.navigation.navigate("Add Image", { images });
   }, [images]);
 
   return (
