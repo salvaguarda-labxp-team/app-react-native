@@ -1,66 +1,36 @@
-import React, { useCallback, useEffect, useState } from "react";
-import * as ImagePicker from "expo-image-picker";
+import React, { useEffect } from "react";
 import { MediaInput } from "../components/chat/MediaInput";
+import { useMediaControls } from "../hooks/useMediaControl";
 
 const ChooseImageExampleScreen: React.FC<{
   navigation: any;
 }> = (props) => {
-  const [images, setImages] = useState<string[]>([]);
+  const {
+    setNavigation,
+    setSelectedImages,
+    selectedImages,
+    selectImageFromCamera,
+    selectImageFromGallery,
+  } = useMediaControls(props.navigation);
 
-  const openCamera = useCallback(async (): Promise<void> => {
-    // Ask the user for the permission to access the camera
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+  useEffect(() => setNavigation(props.navigation), [props.navigation]);
 
-    if (!permissionResult.granted) {
-      alert("You've refused to allow this appp to access your camera!");
-      return;
-    }
-
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    if (!result.cancelled) {
-      setImages([result.uri]);
-    }
-  }, [
-    ImagePicker.requestCameraPermissionsAsync,
-    ImagePicker.launchCameraAsync,
-    setImages,
-    props.navigation.navigate,
-  ]);
-
-  const pickImage = useCallback(async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsMultipleSelection: true,
-      selectionLimit: 5,
-      orderedSelection: true,
-      quality: 0.1,
-    });
-
-    if (!result.cancelled) {
-      const images: string[] = [];
-
-      result.selected.forEach((image) => images.push(image.uri));
-      setImages(images);
-    }
-  }, [setImages, props.navigation, ImagePicker.launchImageLibraryAsync]);
-
-  useEffect(() => setImages([]), []);
+  useEffect(() => setSelectedImages([]), []);
 
   useEffect(() => {
-    if (images.length > 0) props.navigation.navigate("Add Image", { images });
-  }, [images]);
+    if (selectedImages.length > 0) {
+      props.navigation.navigate("Add Image", { images: selectedImages });
+      setSelectedImages([]);
+    }
+  }, [selectedImages]);
 
   return (
     <MediaInput
       navigation={props.navigation}
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      onAddClick={pickImage}
+      onAddClick={selectImageFromGallery}
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      onCameraClick={openCamera}
+      onCameraClick={selectImageFromCamera}
       onMicClick={() => {}}
     />
   );
