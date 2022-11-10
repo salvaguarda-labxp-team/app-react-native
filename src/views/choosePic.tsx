@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { MediaInput } from "../components/chat/MediaInput";
 
-const ImagePickerExample: React.FC<{
+const ChooseImageExampleScreen: React.FC<{
   navigation: any;
 }> = (props) => {
   const [images, setImages] = useState<string[]>([]);
@@ -66,4 +66,4 @@ const ImagePickerExample: React.FC<{
   );
 };
 
-export default ImagePickerExample;
+export default ChooseImageExampleScreen;
