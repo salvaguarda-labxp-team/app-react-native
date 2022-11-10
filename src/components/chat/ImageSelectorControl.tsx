@@ -1,9 +1,9 @@
 import React, { useMemo } from "react";
 
 import { Image, View } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import Swiper from "react-native-swiper";
+import { ActionButton } from "../app/ActionButton";
 
 interface ImageSelectorControlProps {
   onCancelClick: Function;
@@ -18,6 +18,8 @@ interface ImageSelectorControlProps {
 interface ImageCollectionActionsProps {
   selectImageFromCamera: () => void;
   selectImageFromGallery: () => void;
+  isCollectionVisible: boolean;
+  isSubmitVisible: boolean;
 }
 interface SelectedImagesManagingActionsProps {
   onCancelClick: () => void;
@@ -34,6 +36,7 @@ interface ControlBarProps {
 export const ImageCollectionActions: React.FC<ImageCollectionActionsProps> = ({
   selectImageFromCamera,
   selectImageFromGallery,
+  isCollectionVisible,
 }) => {
   return (
     <View
@@ -42,27 +45,37 @@ export const ImageCollectionActions: React.FC<ImageCollectionActionsProps> = ({
         height: 75,
         marginRight: 0,
         padding: 15,
-        backgroundColor: "rgba(0,0,0,0.2)",
         alignItems: "center",
         justifyContent: "space-between",
         position: "absolute",
         left: 0,
-        bottom: 75,
+        bottom: 90,
         display: "flex",
         flexDirection: "row",
       }}
     >
-      <MaterialIcons
-        name="image"
-        size={50}
-        color="white"
-        onPress={selectImageFromGallery}
-      />
-      <MaterialIcons
-        name="camera-alt"
-        size={50}
-        color="white"
-        onPress={selectImageFromCamera}
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
+        <ActionButton
+          icon="image"
+          isVisible={isCollectionVisible}
+          onClick={selectImageFromGallery}
+          style={{ marginRight: 15 }}
+        />
+        <ActionButton
+          onClick={selectImageFromCamera}
+          isVisible={isCollectionVisible}
+          icon={"camera-alt"}
+        />
+      </View>
+      <ActionButton
+        onClick={() => console.log("enviei")}
+        color={"#175ac1"}
+        icon={"send"}
       />
     </View>
   );
@@ -73,26 +86,19 @@ export const SelectedImagesManagingActions: React.FC<
 > = ({ onCancelClick, onDeleteClick }) => {
   return (
     <>
-      <View
-        style={{ position: "absolute", top: 20, left: 20, shadowOpacity: 1 }}
-      >
-        <MaterialIcons
-          name="cancel"
-          size={40}
-          color="white"
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onPress={onCancelClick}
+      <View style={{ position: "absolute", top: 20, left: 20 }}>
+        <ActionButton
+          icon="cancel"
+          onClick={onCancelClick}
+          style={{ marginRight: 15 }}
         />
       </View>
 
-      <View
-        style={{ position: "absolute", top: 20, right: 20, shadowOpacity: 1 }}
-      >
-        <MaterialIcons
-          name="restore-from-trash"
-          size={40}
-          color="white"
-          onPress={onDeleteClick}
+      <View style={{ position: "absolute", top: 20, right: 20 }}>
+        <ActionButton
+          icon="restore-from-trash"
+          onClick={onDeleteClick}
+          style={{ marginRight: 15 }}
         />
       </View>
     </>
@@ -129,15 +135,15 @@ const ControlBar: React.FC<ControlBarProps> = ({
   );
 
   const controlBarItems = useMemo(() => {
-    return controlBarImageViews.length >= 5
-      ? controlBarImageViews
-      : [
-          ...controlBarImageViews,
-          <ImageCollectionActions
-            key={controlBarImageViews.length}
-            {...{ selectImageFromGallery, selectImageFromCamera }}
-          />,
-        ];
+    return [
+      ...controlBarImageViews,
+      <ImageCollectionActions
+        key={controlBarImageViews.length}
+        isCollectionVisible={controlBarImageViews.length < 5}
+        isSubmitVisible={controlBarImageViews.length > 0}
+        {...{ selectImageFromGallery, selectImageFromCamera }}
+      />,
+    ];
   }, [
     controlBarImageViews.length,
     currentImageIndex,
