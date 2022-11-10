@@ -20,13 +20,15 @@ const MediaSelectionControlScreen = (props: any): JSX.Element => {
 
   useEffect(() => {
     setSelectedImages(props.route.params.images);
-    console.log(props.route.params.images);
   }, [props?.route?.params?.images]);
 
   return (
     <ImageSelectorControl
       onCancelClick={cancelSelection}
       onDeleteClick={deleteSelection}
+      submitImages={() => {
+        console.log("aa");
+      }}
       selectImageFromCamera={selectImageFromCamera}
       selectImageFromGallery={selectImageFromGallery}
       onSwiperIndexChange={onSwiperIndexChange}

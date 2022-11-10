@@ -8,6 +8,7 @@ import { ActionButton } from "../app/ActionButton";
 interface ImageSelectorControlProps {
   onCancelClick: Function;
   onDeleteClick: Function;
+  submitImages: () => void;
   selectImageFromCamera: Function;
   selectImageFromGallery: Function;
   onSwiperIndexChange: Function;
@@ -18,6 +19,7 @@ interface ImageSelectorControlProps {
 interface ImageCollectionActionsProps {
   selectImageFromCamera: () => void;
   selectImageFromGallery: () => void;
+  submitImages: () => void;
   isCollectionVisible: boolean;
   isSubmitVisible: boolean;
 }
@@ -31,11 +33,13 @@ interface ControlBarProps {
   currentImageIndex: number;
   selectImageFromGallery: () => void;
   selectImageFromCamera: () => void;
+  submitImages: () => void;
 }
 
 export const ImageCollectionActions: React.FC<ImageCollectionActionsProps> = ({
   selectImageFromCamera,
   selectImageFromGallery,
+  submitImages,
   isCollectionVisible,
 }) => {
   return (
@@ -72,11 +76,7 @@ export const ImageCollectionActions: React.FC<ImageCollectionActionsProps> = ({
           icon={"camera-alt"}
         />
       </View>
-      <ActionButton
-        onClick={() => console.log("enviei")}
-        color={"#175ac1"}
-        icon={"send"}
-      />
+      <ActionButton onClick={submitImages} color={"#175ac1"} icon={"send"} />
     </View>
   );
 };
@@ -110,6 +110,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
   currentImageIndex,
   selectImageFromGallery,
   selectImageFromCamera,
+  submitImages,
 }) => {
   const controlBarImageViews = useMemo(
     () =>
@@ -134,22 +135,6 @@ const ControlBar: React.FC<ControlBarProps> = ({
     [selectedImagesURI, currentImageIndex]
   );
 
-  const controlBarItems = useMemo(() => {
-    return [
-      ...controlBarImageViews,
-      <ImageCollectionActions
-        key={controlBarImageViews.length}
-        isCollectionVisible={controlBarImageViews.length < 5}
-        isSubmitVisible={controlBarImageViews.length > 0}
-        {...{ selectImageFromGallery, selectImageFromCamera }}
-      />,
-    ];
-  }, [
-    controlBarImageViews.length,
-    currentImageIndex,
-    selectImageFromCamera,
-    selectImageFromGallery,
-  ]);
   return (
     <View
       style={{
@@ -161,7 +146,17 @@ const ControlBar: React.FC<ControlBarProps> = ({
         flexDirection: "row",
       }}
     >
-      {controlBarItems}
+      {controlBarImageViews}
+      <ImageCollectionActions
+        key={controlBarImageViews.length}
+        isCollectionVisible={controlBarImageViews.length < 5}
+        isSubmitVisible={controlBarImageViews.length > 0}
+        {...{
+          selectImageFromGallery,
+          selectImageFromCamera,
+          submitImages,
+        }}
+      />
     </View>
   );
 };
@@ -169,6 +164,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
 export const ImageSelectorControl: React.FC<ImageSelectorControlProps> = ({
   onCancelClick,
   onDeleteClick,
+  submitImages,
   selectedImagesURI,
   onSwiperIndexChange,
   selectImageFromGallery,
@@ -217,6 +213,7 @@ export const ImageSelectorControl: React.FC<ImageSelectorControlProps> = ({
           selectedImagesURI,
           selectImageFromCamera,
           selectImageFromGallery,
+          submitImages,
         }}
       />
     </View>

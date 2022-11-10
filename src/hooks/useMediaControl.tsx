@@ -36,7 +36,6 @@ export function useMediaControls({
 
   const onSwiperIndexChange = useCallback(
     (index: number) => {
-      console.log("swiper index change", index);
       setCurrentImageIndex(index);
     },
     [setCurrentImageIndex]
