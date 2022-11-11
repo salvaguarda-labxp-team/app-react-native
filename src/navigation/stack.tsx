@@ -9,6 +9,7 @@ import {
   Menu,
   ChatsListScreen,
   ForgotPasswordScreen,
+  ChatScreen,
 } from "../views";
 
 const Stack = createNativeStackNavigator();
@@ -24,5 +25,6 @@ export default (): JSX.Element => (
       component={Menu}
       options={{ headerShown: false }}
     />
+    <Stack.Screen name="Chat" component={ChatScreen} />
   </Stack.Navigator>
 );

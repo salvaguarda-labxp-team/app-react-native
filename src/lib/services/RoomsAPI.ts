@@ -54,25 +54,30 @@ export class RoomsAPI {
       (doc) => doc.data().rid
     );
 
-    if (!subscribedRooms.length) {
-      return [];
-    }
+    const results = [];
+    while (subscribedRooms.length) {
+      const batch = subscribedRooms.splice(0, 10);
 
-    const roomsQuery = query(
-      RoomsAPI.roomsRef,
-      where(documentId(), "in", subscribedRooms)
-    );
-    const querySnapshotRooms = await getDocs(roomsQuery);
-    return querySnapshotRooms.docs
-      .map((doc) => ({
-        _id: doc.id,
-        createdAt: doc.data().createdAt,
-        lm: doc.data().lm.toDate(),
-        name: doc.data().name,
-        subject: doc.data().subject,
-        type: doc.data().type,
-        creatorId: doc.data().creatorId,
-      }))
-      .sort((a, b) => b.lm - a.lm);
+      const roomsQuery = query(
+        RoomsAPI.roomsRef,
+        where(documentId(), "in", batch)
+      );
+      const querySnapshotRooms = await getDocs(roomsQuery);
+
+      results.push(
+        ...querySnapshotRooms.docs
+          .map((doc) => ({
+            _id: doc.id,
+            createdAt: doc.data().createdAt,
+            lm: doc.data().lm.toDate(),
+            name: doc.data().name,
+            subject: doc.data().subject,
+            type: doc.data().type,
+            creatorId: doc.data().creatorId,
+          }))
+          .sort((a, b) => b.lm - a.lm)
+      );
+    }
+    return results;
   }
 }
