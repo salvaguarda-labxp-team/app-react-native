@@ -5,13 +5,14 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { StyleProps } from "react-native-reanimated";
 
 export const ActionButton: React.FC<{
-  onClick: () => void;
+  onPress: () => void;
   color?: string;
   isVisible?: boolean;
   style?: StyleProps;
+  testID?: string;
   icon: "send" | "camera-alt" | "image" | "cancel" | "restore-from-trash";
 }> = ({
-  onClick,
+  onPress,
   color = "rgba(0,0,0,0.6)",
   icon,
   isVisible = true,
@@ -19,7 +20,7 @@ export const ActionButton: React.FC<{
 }) => {
   return (
     <TouchableOpacity
-      onPress={onClick}
+      onPress={onPress}
       style={{
         backgroundColor: color,
         width: 65,

@@ -67,16 +67,16 @@ export const ImageCollectionActions: React.FC<ImageCollectionActionsProps> = ({
         <ActionButton
           icon="image"
           isVisible={isCollectionVisible}
-          onClick={selectImageFromGallery}
+          onPress={selectImageFromGallery}
           style={{ marginRight: 15 }}
         />
         <ActionButton
-          onClick={selectImageFromCamera}
+          onPress={selectImageFromCamera}
           isVisible={isCollectionVisible}
           icon={"camera-alt"}
         />
       </View>
-      <ActionButton onClick={submitImages} color={"#175ac1"} icon={"send"} />
+      <ActionButton onPress={submitImages} color={"#175ac1"} icon={"send"} />
     </View>
   );
 };
@@ -88,16 +88,18 @@ export const SelectedImagesManagingActions: React.FC<
     <>
       <View style={{ position: "absolute", top: 20, left: 20 }}>
         <ActionButton
+          testID="Cancel"
           icon="cancel"
-          onClick={onCancelClick}
+          onPress={onCancelClick}
           style={{ marginRight: 15 }}
         />
       </View>
 
       <View style={{ position: "absolute", top: 20, right: 20 }}>
         <ActionButton
+          testID="Delete"
           icon="restore-from-trash"
-          onClick={onDeleteClick}
+          onPress={onDeleteClick}
           style={{ marginRight: 15 }}
         />
       </View>
