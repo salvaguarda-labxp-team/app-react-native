@@ -1,8 +1,8 @@
 import { useState } from "react";
-import DropDownPicker from 'react-native-dropdown-picker';
+import DropDownPicker from "react-native-dropdown-picker";
 import Modal from "react-native-modal";
 import { Text, View, StyleSheet, Pressable } from "react-native";
-import { Input, ButtonGroup, FAB} from "react-native-elements";
+import { Input, ButtonGroup, FAB } from "react-native-elements";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AuthenticationAPI, QuestionsAPI } from "../lib/services";
 
@@ -18,41 +18,48 @@ export default function QuestionsListScreen() {
     { label: "Geografia", value: "Geo" },
     { label: "Biologia", value: "Bio" },
     { label: "Química", value: "Chem" },
-    { label: "História", value: "Hist"},
-    { label: "Filosofia", value: "Philo"},
-    { label: "Sociologia", value: "Socio"},
-    { label: "Física", value: "Phys"},
-    { label: "Artes", value: "Arts"}
-  ])
+    { label: "História", value: "Hist" },
+    { label: "Filosofia", value: "Philo" },
+    { label: "Sociologia", value: "Socio" },
+    { label: "Física", value: "Phys" },
+    { label: "Artes", value: "Arts" },
+  ]);
 
   const createQuestion = async () => {
     const currentUser = AuthenticationAPI.getCurrentUser();
-    if (currentUser && chosenSubject && description && questionTitle && currentUser.email) {
+    if (
+      currentUser &&
+      chosenSubject &&
+      description &&
+      questionTitle &&
+      currentUser.email
+    ) {
       try {
         await QuestionsAPI.createQuestion(
-          questionTitle, 
-          description, 
+          questionTitle,
+          description,
           chosenSubject,
-          currentUser.email);
-      } catch(e: any) {
+          currentUser.email
+        );
+      } catch (e: any) {
         console.log(e);
       }
-      
+
       setModalVisible(false);
       setQuestionTitle("");
       setChosenSubject("");
       setDescription("");
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
       <Modal
+        testID="question-modal"
         avoidKeyboard={true}
         isVisible={modalVisible}
         onBackdropPress={() => setModalVisible(!modalVisible)}
       >
-
         <View style={styles.modalWindow}>
           <Text style={styles.modalText}>Criação de Chat</Text>
 
@@ -93,11 +100,12 @@ export default function QuestionsListScreen() {
       </Modal>
 
       <FAB
+        testID="add-question"
         icon={{ name: "add", color: "white" }}
         placement="right"
         onPress={() => setModalVisible(!modalVisible)}
       />
-    </View> 
+    </View>
   );
 }
 
@@ -121,21 +129,21 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
-  button: { 
+  button: {
     margin: 10,
     borderRadius: 20,
     padding: 10,
     elevation: 2,
   },
-  buttonClose: { 
+  buttonClose: {
     backgroundColor: "#2196F3",
   },
-  modalText: { 
+  modalText: {
     fontWeight: "bold",
     marginBottom: 15,
     textAlign: "center",
   },
-  container: { 
+  container: {
     alignItems: "center",
     paddingVertical: 5,
     flexGrow: 1,

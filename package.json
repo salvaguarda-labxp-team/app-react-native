@@ -44,6 +44,7 @@
     "@babel/core": "^7.12.9",
     "@testing-library/jest-native": "^5.1.2",
     "@testing-library/react-native": "^11.3.0",
+    "@testing-library/jest-dom": "5.16.5",
     "@types/jest": "^29.2.0",
     "@types/react": "~18.0.14",
     "@types/react-native": "~0.69.1",
