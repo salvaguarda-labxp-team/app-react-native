@@ -3,7 +3,6 @@ import { View, SafeAreaView } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
 export const MediaInput: React.FC<{
-  navigation: any;
   onCameraClick: () => void;
   onAddClick: () => void;
   onMicClick: () => void;
@@ -19,6 +18,7 @@ export const MediaInput: React.FC<{
         }}
       >
         <MaterialIcons
+          testID="Camera"
           name="camera-alt"
           size={30}
           color="black"
@@ -27,6 +27,7 @@ export const MediaInput: React.FC<{
         />
 
         <MaterialIcons
+          testID="Gallery"
           name="add-to-photos"
           size={30}
           color="black"
@@ -35,6 +36,7 @@ export const MediaInput: React.FC<{
         />
 
         <MaterialIcons
+          testID={"VoiceNote"}
           name="mic"
           size={30}
           color="black"
