@@ -1,16 +1,6 @@
-export type IQuestionStatus = "pending" | "in_progress" | "closed";
+import { IQuestionSubject } from "./ISubject";
 
-export type IQuestionSubject =
-  | "Math"
-  | "Port"
-  | "Geo"
-  | "Hist"
-  | "Bio"
-  | "Chem"
-  | "Socio"
-  | "Philo"
-  | "Tutor"
-  | "Essay";
+export type IQuestionStatus = "pending" | "in_progress" | "closed";
 
 export type IQuestion = {
   _id: string;

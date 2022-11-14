@@ -1,16 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import Modal from "react-native-modal";
-import { Text, View, StyleSheet, Pressable } from "react-native";
-import { Input, ButtonGroup, FAB } from "react-native-elements";
+import { Text, View, StyleSheet, Pressable, ScrollView } from "react-native";
+import {
+  Input,
+  ButtonGroup,
+  FAB,
+  ListItem,
+  Tab,
+  TabView,
+} from "react-native-elements";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AuthenticationAPI, QuestionsAPI } from "../lib/services";
+import { IQuestion, subjectsMap, SubjectInfo } from "../definitions";
 
 export default function QuestionsListScreen() {
+  const [questions, setQuestions] = useState<IQuestion[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [description, setDescription] = useState("");
   const [questionTitle, setQuestionTitle] = useState("");
   const [dropDrownExpanded, setDropDownExpanded] = useState(false);
+  const [currentSubject, setCurrentSubject] = useState(-4);
   const [chosenSubject, setChosenSubject] = useState("");
   const [availableSubjects, setAvailableSubjects] = useState([
     { label: "Matemática", value: "Math" },
@@ -24,6 +34,20 @@ export default function QuestionsListScreen() {
     { label: "Física", value: "Phys" },
     { label: "Artes", value: "Arts" },
   ]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const user = AuthenticationAPI.getCurrentUser();
+      setTimeout(async () => {
+        if (user && user.email) {
+          setQuestions(
+            await QuestionsAPI.getUserQuestionsByStatus(user.email, "pending")
+          );
+        }
+      }, 2000);
+    };
+    fetchData().catch(console.error);
+  });
 
   const createQuestion = async () => {
     const currentUser = AuthenticationAPI.getCurrentUser();
@@ -54,6 +78,30 @@ export default function QuestionsListScreen() {
 
   return (
     <View style={styles.container}>
+      <ScrollView
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        style={styles.tab}
+      >
+        <Tab
+          value={currentSubject}
+          onChange={(e) => setCurrentSubject(e)}
+          indicatorStyle={{
+            backgroundColor: "white",
+            height: 3,
+          }}
+          variant="primary"
+        >
+          {Object.entries(subjectsMap).map(([k, v], i) => (
+            <Tab.Item
+              title={v.name}
+              titleStyle={{ fontSize: 12 }}
+              icon={{ name: v.icon, type: "material", color: "white" }}
+            />
+          ))}
+        </Tab>
+      </ScrollView>
+
       <Modal
         testID="question-modal"
         avoidKeyboard={true}
@@ -99,6 +147,18 @@ export default function QuestionsListScreen() {
         </View>
       </Modal>
 
+      <TabView
+        value={currentSubject}
+        onChange={setCurrentSubject}
+        animationType="spring"
+      >
+        {Object.entries(subjectsMap).map(([k, v], i) => (
+          <TabView.Item style={{ backgroundColor: "red", width: "100%" }}>
+            <Text h1>{v.name}</Text>
+          </TabView.Item>
+        ))}
+      </TabView>
+
       <FAB
         testID="add-question"
         icon={{ name: "add", color: "white" }}
@@ -110,6 +170,17 @@ export default function QuestionsListScreen() {
 }
 
 const styles = StyleSheet.create({
+  tab: {
+    flexGrow: 0,
+  },
+  listItem: {
+    width: "100%",
+    backgroundColor: "white",
+    alignItems: "center",
+  },
+  scrollView: {
+    width: "100%",
+  },
   modalWindow: {
     width: "100%",
     backgroundColor: "white",
