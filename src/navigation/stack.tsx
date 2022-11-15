@@ -17,7 +17,7 @@ import {
 const Stack = createNativeStackNavigator();
 
 export default (): JSX.Element => (
-  <Stack.Navigator initialRouteName="Select Pics">
+  <Stack.Navigator initialRouteName="Login">
     <Stack.Screen name="Login" component={LoginScreen} />
     <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
     <Stack.Screen name="Register" component={RegisterScreen} />
