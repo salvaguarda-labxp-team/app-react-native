@@ -9,7 +9,6 @@ import {
   Menu,
   ChatsListScreen,
   ForgotPasswordScreen,
-  ChooseImage,
   AddImage,
   ChatScreen,
 } from "../views";
@@ -28,7 +27,6 @@ export default (): JSX.Element => (
       options={{ headerShown: false }}
     />
     <Stack.Screen name="Chat" component={ChatScreen} />
-    <Stack.Screen name="Select Pics" component={ChooseImage} />
     <Stack.Screen
       name="Add Image"
       component={AddImage}
