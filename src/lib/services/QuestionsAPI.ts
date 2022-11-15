@@ -34,7 +34,6 @@ export class QuestionsAPI {
   ): Promise<void> {
     const question = await addDoc(QuestionsAPI.questionsRef, {
       createdAt: new Date(),
-      rid: RoomsAPI.createRoom,
       title,
       description,
       subject,
