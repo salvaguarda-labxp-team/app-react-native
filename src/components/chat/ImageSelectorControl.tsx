@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 
-import { Image, View } from "react-native";
+import { Image, View, StyleSheet } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import Swiper from "react-native-swiper";
 import { ActionButton } from "../app/ActionButton";
@@ -43,27 +43,8 @@ export const ImageCollectionActions: React.FC<ImageCollectionActionsProps> = ({
   isCollectionVisible,
 }) => {
   return (
-    <View
-      style={{
-        width: "100%",
-        height: 75,
-        marginRight: 0,
-        padding: 15,
-        alignItems: "center",
-        justifyContent: "space-between",
-        position: "absolute",
-        left: 0,
-        bottom: 90,
-        display: "flex",
-        flexDirection: "row",
-      }}
-    >
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "row",
-        }}
-      >
+    <View style={imageCollectionStyles.ActionsMenu}>
+      <View style={imageCollectionStyles.CollectActionsContainer}>
         <ActionButton
           icon="image"
           isVisible={isCollectionVisible}
@@ -81,12 +62,32 @@ export const ImageCollectionActions: React.FC<ImageCollectionActionsProps> = ({
   );
 };
 
+const imageCollectionStyles = StyleSheet.create({
+  ActionsMenu: {
+    width: "100%",
+    height: 75,
+    marginRight: 0,
+    padding: 15,
+    alignItems: "center",
+    justifyContent: "space-between",
+    position: "absolute",
+    left: 0,
+    bottom: 90,
+    display: "flex",
+    flexDirection: "row",
+  },
+  CollectActionsContainer: {
+    display: "flex",
+    flexDirection: "row",
+  },
+});
+
 export const SelectedImagesManagingActions: React.FC<
   SelectedImagesManagingActionsProps
 > = ({ onCancelClick, onDeleteClick }) => {
   return (
     <>
-      <View style={{ position: "absolute", top: 20, left: 20 }}>
+      <View style={managingActionsStyles.ActionButtonContainer}>
         <ActionButton
           testID="Cancel"
           icon="cancel"
@@ -95,7 +96,7 @@ export const SelectedImagesManagingActions: React.FC<
         />
       </View>
 
-      <View style={{ position: "absolute", top: 20, right: 20 }}>
+      <View style={managingActionsStyles.ActionButtonContainer}>
         <ActionButton
           testID="Delete"
           icon="restore-from-trash"
@@ -106,6 +107,10 @@ export const SelectedImagesManagingActions: React.FC<
     </>
   );
 };
+
+const managingActionsStyles = StyleSheet.create({
+  ActionButtonContainer: { position: "absolute", top: 20, right: 20 },
+});
 
 const ControlBar: React.FC<ControlBarProps> = ({
   selectedImagesURI,
@@ -138,16 +143,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
   );
 
   return (
-    <View
-      style={{
-        position: "absolute",
-        bottom: 0,
-        width: "100%",
-        height: "10%",
-        backgroundColor: "rgba(0,0,0,0.4)",
-        flexDirection: "row",
-      }}
-    >
+    <View style={controlBarStyles.ControlBar}>
       {controlBarImageViews}
       <ImageCollectionActions
         key={controlBarImageViews.length}
@@ -162,6 +158,17 @@ const ControlBar: React.FC<ControlBarProps> = ({
     </View>
   );
 };
+
+const controlBarStyles = StyleSheet.create({
+  ControlBar: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    height: "10%",
+    backgroundColor: "rgba(0,0,0,0.4)",
+    flexDirection: "row",
+  },
+});
 
 export const ImageSelectorControl: React.FC<ImageSelectorControlProps> = ({
   onCancelClick,
