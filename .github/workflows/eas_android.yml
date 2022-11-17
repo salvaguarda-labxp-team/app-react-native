@@ -1,6 +1,10 @@
 name: EAS Build
 on:
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Node.js CI"]
+    types:
+      - completed
   push:
     branches:
       - main
