@@ -8,12 +8,13 @@ on:
     branches: ["development"]
 
 jobs:
-  test:
+  test-and-merge:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
+      - uses: actions/checkout@master
         with:
           node-version: 16
           cache: "npm"
@@ -21,11 +22,6 @@ jobs:
         run: npm ci
       - name: Run tests
         run: npm test
-
-  merge-branch:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
 
       - name: Merge development -> main
         uses: devmasx/merge-branch@master
