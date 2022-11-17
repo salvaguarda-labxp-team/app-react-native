@@ -29,3 +29,4 @@ jobs:
           type: now
           target_branch: main
           github_token: ${{ github.token }}
+          commit_message_template: '[Automated] Merged branch development into main'
