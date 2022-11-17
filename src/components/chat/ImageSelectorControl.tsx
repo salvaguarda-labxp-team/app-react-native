@@ -87,21 +87,19 @@ export const SelectedImagesManagingActions: React.FC<
 > = ({ onCancelClick, onDeleteClick }) => {
   return (
     <>
-      <View style={managingActionsStyles.ActionButtonContainer}>
+      <View style={managingActionsStyles.ActionButtonContainerLeft}>
         <ActionButton
           testID="Cancel"
           icon="cancel"
           onPress={onCancelClick}
-          style={{ marginRight: 15 }}
         />
       </View>
 
-      <View style={managingActionsStyles.ActionButtonContainer}>
+      <View style={managingActionsStyles.ActionButtonContainerRight}>
         <ActionButton
           testID="Delete"
           icon="restore-from-trash"
           onPress={onDeleteClick}
-          style={{ marginRight: 15 }}
         />
       </View>
     </>
@@ -109,7 +107,8 @@ export const SelectedImagesManagingActions: React.FC<
 };
 
 const managingActionsStyles = StyleSheet.create({
-  ActionButtonContainer: { position: "absolute", top: 20, right: 20 },
+  ActionButtonContainerLeft: { position: "absolute", top: 20, left: 15 },
+  ActionButtonContainerRight: { position: "absolute", top: 20, right: 15 },
 });
 
 const ControlBar: React.FC<ControlBarProps> = ({
@@ -205,6 +204,7 @@ export const ImageSelectorControl: React.FC<ImageSelectorControlProps> = ({
         onIndexChanged={onSwiperIndexChange}
         index={currentImageIndex}
         key={selectedImagesURI.length}
+        showsPagination={false}
       >
         {swiperImageViews}
       </Swiper>
