@@ -14,7 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      - uses: actions/checkout@master
         with:
           node-version: 16
           cache: "npm"
@@ -24,9 +23,10 @@ jobs:
         run: npm test
 
       - name: Merge development -> main
-        uses: devmasx/merge-branch@master
+        uses: everlytic/branch-merge@1.1.2
         with:
           type: now
           target_branch: main
+          source_ref: ${{ github.ref }}
           github_token: ${{ github.token }}
-          commit_message_template: '[Automated] Merged branch development into main'
+          commit_message_template: '[Automated] Merged bradevelopment into main'
