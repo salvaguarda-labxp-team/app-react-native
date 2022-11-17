@@ -4,8 +4,8 @@
 name: Node.js CI
 
 on:
-  pull_request:
-    branches: [ "main", "development" ]
+  push:
+    branches: ["development"]
 
 jobs:
   test:
@@ -21,3 +21,15 @@ jobs:
         run: npm ci
       - name: Run tests
         run: npm test
+
+  merge-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Merge development -> main
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          target_branch: main
+          github_token: ${{ github.token }}
