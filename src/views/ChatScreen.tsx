@@ -7,12 +7,14 @@ import React, {
 } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Avatar } from "react-native-elements";
+import { Avatar, Button } from "react-native-elements";
 import { GiftedChat } from "react-native-gifted-chat";
 import { IMessage } from "react-native-gifted-chat/lib/Models";
 import { AuthenticationAPI, MessagesAPI } from "../lib/services";
 import { ChatScreenProps, IUser } from "../definitions";
 import { auth } from "../lib/utils/firebase";
+import { useMediaControls } from "../hooks/useMediaControl";
+import { MediaInput } from "../components/chat/MediaInput";
 
 const ChatScreen = ({ route, navigation }: ChatScreenProps) => {
   const { roomId, roomName } = route.params;
@@ -30,7 +32,7 @@ const ChatScreen = ({ route, navigation }: ChatScreenProps) => {
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      if (!user) {
+      if (user == null) {
         navigation.replace("Login");
       }
     });
@@ -80,6 +82,25 @@ const ChatScreen = ({ route, navigation }: ChatScreenProps) => {
     });
   }, []);
 
+  const {
+    setNavigation,
+    setSelectedImages,
+    selectedImages,
+    selectImageFromCamera,
+    selectImageFromGallery,
+  } = useMediaControls({ initialNavigation: navigation });
+
+  useEffect(() => setNavigation(navigation), [navigation]);
+
+  useEffect(() => setSelectedImages([]), []);
+
+  useEffect(() => {
+    if (selectedImages.length > 0) {
+      navigation.navigate("Add Image", { images: selectedImages });
+      setSelectedImages([]);
+    }
+  }, [selectedImages]);
+
   return (
     <GiftedChat
       messages={messages}
@@ -92,6 +113,15 @@ const ChatScreen = ({ route, navigation }: ChatScreenProps) => {
           AuthenticationAPI.getCurrentUser()?.photoURL ||
           AuthenticationAPI.defaultPhotoURL,
       }}
+      renderChatFooter={() => (
+        <MediaInput
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onAddClick={selectImageFromGallery}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onCameraClick={selectImageFromCamera}
+          onMicClick={() => {}}
+        />
+      )}
     />
   );
 };
