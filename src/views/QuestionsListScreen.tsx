@@ -12,16 +12,22 @@ import {
 } from "react-native-elements";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AuthenticationAPI, QuestionsAPI } from "../lib/services";
-import { IQuestion, subjectsMap, SubjectInfo } from "../definitions";
+import {
+  IQuestion,
+  subjectsMap,
+  SubjectInfo,
+  IQuestionSubject,
+} from "../definitions";
 
 export default function QuestionsListScreen() {
   const [questions, setQuestions] = useState<IQuestion[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [description, setDescription] = useState("");
   const [questionTitle, setQuestionTitle] = useState("");
+  const [isCQButtonDisabled, setIsCQButtonDisabled] = useState<boolean>(false);
   const [dropDrownExpanded, setDropDownExpanded] = useState(false);
   const [currentSubject, setCurrentSubject] = useState(0);
-  const [chosenSubject, setChosenSubject] = useState("");
+  const [chosenSubject, setChosenSubject] = useState<IQuestionSubject | "">("");
   const [subjectsList, setSubjectsList] = useState(
     Object.entries(subjectsMap).map(([k, v]) => v)
   );
@@ -56,12 +62,13 @@ export default function QuestionsListScreen() {
     const currentUser = AuthenticationAPI.getCurrentUser();
     if (
       currentUser != null &&
-      chosenSubject &&
+      chosenSubject !== "" &&
       description &&
       questionTitle &&
       currentUser.email
     ) {
       try {
+        setIsCQButtonDisabled(true);
         await QuestionsAPI.createQuestion(
           questionTitle,
           description,
@@ -71,7 +78,8 @@ export default function QuestionsListScreen() {
       } catch (e: any) {
         console.log(e);
       }
-
+      
+      setIsCQButtonDisabled(false);
       setModalVisible(false);
       setQuestionTitle("");
       setChosenSubject("");
@@ -104,6 +112,7 @@ export default function QuestionsListScreen() {
                 type: "material",
                 color: "white",
               }}
+              key={i}
             />
           ))}
         </Tab>
@@ -146,8 +155,13 @@ export default function QuestionsListScreen() {
           />
 
           <Pressable
-            style={[styles.button, styles.buttonClose]}
+            style={[
+              styles.button,
+              styles.buttonClose,
+              ...(isCQButtonDisabled ? [styles.buttonCloseDisabled] : []),
+            ]}
             onPress={createQuestion}
+            disabled={isCQButtonDisabled}
           >
             <Text style={styles.textStyle}>Enviar dúvida</Text>
           </Pressable>
@@ -160,7 +174,10 @@ export default function QuestionsListScreen() {
           animationType="spring"
         >
           {subjectsList.map((v, k) => (
-            <TabView.Item style={{ backgroundColor: "red", width: "100%" }}>
+            <TabView.Item
+              style={{ backgroundColor: "red", width: "100%" }}
+              key={k}
+            >
               <Text h1>{v.name}</Text>
             </TabView.Item>
           ))}
@@ -222,6 +239,9 @@ const styles = StyleSheet.create({
   },
   buttonClose: {
     backgroundColor: "#2196F3",
+  },
+  buttonCloseDisabled: {
+    opacity: 0.4,
   },
   modalText: {
     fontWeight: "bold",
