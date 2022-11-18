@@ -6,13 +6,8 @@ import {
   addDoc,
   CollectionReference,
 } from "firebase/firestore";
-import { IUser, User } from "../../../definitions";
+import { IUser, User, IUserProps, UsersDB } from "../../../definitions";
 import { db } from "../../utils/firebase";
-
-export interface UsersDB {
-  createUser: (userData: User) => Promise<IUser>;
-  getUserByProperty: (property: string, value: string) => Promise<IUser | null>;
-}
 
 export class FirebaseUsersDB implements UsersDB {
   private readonly usersRef: CollectionReference = collection(db, "users");
@@ -30,7 +25,7 @@ export class FirebaseUsersDB implements UsersDB {
   }
 
   public async getUserByProperty(
-    property: string,
+    property: IUserProps,
     value: string
   ): Promise<IUser | null> {
     const q = query(this.usersRef, where(property, "==", value));
