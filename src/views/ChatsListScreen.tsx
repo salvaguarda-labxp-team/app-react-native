@@ -1,5 +1,5 @@
 import { StyleSheet, TouchableOpacity, View, ScrollView } from "react-native";
-import { ListItem } from "react-native-elements";
+import { ListItem , Avatar } from "react-native-elements";
 import React, {
   useLayoutEffect,
   useState,
@@ -9,11 +9,11 @@ import React, {
 import DropDownPicker from "react-native-dropdown-picker";
 import { onAuthStateChanged } from "firebase/auth";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Avatar } from "react-native-elements";
+
 import { AuthenticationAPI, RoomsAPI } from "../lib/services";
 import { ChatsListScreenProps, IRoom } from "../definitions";
 import { auth } from "../lib/utils/firebase";
-import { UsersAPI } from "../lib/services/UsersAPI";
+import FirebaseUsersAPI from "../lib/services/FirebaseUsersAPI";
 
 const ChatsListScreen = ({ navigation }: ChatsListScreenProps) => {
   const [rooms, setRooms] = useState<IRoom[]>([]);
@@ -22,7 +22,7 @@ const ChatsListScreen = ({ navigation }: ChatsListScreenProps) => {
     const fetchData = async () => {
       const user = AuthenticationAPI.getCurrentUser();
       setTimeout(async () => {
-        if (user && user.email) {
+        if ((user != null) && user.email) {
           setRooms(await RoomsAPI.getUserRooms(user.email));
         }
       }, 2000);
@@ -33,7 +33,7 @@ const ChatsListScreen = ({ navigation }: ChatsListScreenProps) => {
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      if (!user) {
+      if (user == null) {
         navigation.replace("Login");
       }
     });
