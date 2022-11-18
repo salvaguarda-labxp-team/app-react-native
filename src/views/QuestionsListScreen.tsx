@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import Modal from "react-native-modal";
 import { Text, View, StyleSheet, Pressable, ScrollView } from "react-native";
@@ -20,8 +20,11 @@ export default function QuestionsListScreen() {
   const [description, setDescription] = useState("");
   const [questionTitle, setQuestionTitle] = useState("");
   const [dropDrownExpanded, setDropDownExpanded] = useState(false);
-  const [currentSubject, setCurrentSubject] = useState(-4);
+  const [currentSubject, setCurrentSubject] = useState(0);
   const [chosenSubject, setChosenSubject] = useState("");
+  const [subjectsList, setSubjectsList] = useState(
+    Object.entries(subjectsMap).map(([k, v]) => v)
+  );
   const [availableSubjects, setAvailableSubjects] = useState([
     { label: "Matemática", value: "Math" },
     { label: "Português", value: "Port" },
@@ -39,7 +42,7 @@ export default function QuestionsListScreen() {
     const fetchData = async () => {
       const user = AuthenticationAPI.getCurrentUser();
       setTimeout(async () => {
-        if (user && user.email) {
+        if (user != null && user.email) {
           setQuestions(
             await QuestionsAPI.getUserQuestionsByStatus(user.email, "pending")
           );
@@ -52,7 +55,7 @@ export default function QuestionsListScreen() {
   const createQuestion = async () => {
     const currentUser = AuthenticationAPI.getCurrentUser();
     if (
-      currentUser &&
+      currentUser != null &&
       chosenSubject &&
       description &&
       questionTitle &&
@@ -92,11 +95,15 @@ export default function QuestionsListScreen() {
           }}
           variant="primary"
         >
-          {Object.entries(subjectsMap).map(([k, v], i) => (
+          {subjectsList.map((v, i) => (
             <Tab.Item
               title={v.name}
               titleStyle={{ fontSize: 12 }}
-              icon={{ name: v.icon, type: "material", color: "white" }}
+              icon={{
+                name: v.icon,
+                type: "material",
+                color: "white",
+              }}
             />
           ))}
         </Tab>
@@ -146,19 +153,19 @@ export default function QuestionsListScreen() {
           </Pressable>
         </View>
       </Modal>
-
-      <TabView
-        value={currentSubject}
-        onChange={setCurrentSubject}
-        animationType="spring"
-      >
-        {Object.entries(subjectsMap).map(([k, v], i) => (
-          <TabView.Item style={{ backgroundColor: "red", width: "100%" }}>
-            <Text h1>{v.name}</Text>
-          </TabView.Item>
-        ))}
-      </TabView>
-
+      <View style={styles.tabView}>
+        <TabView
+          value={currentSubject}
+          onChange={setCurrentSubject}
+          animationType="spring"
+        >
+          {subjectsList.map((v, k) => (
+            <TabView.Item style={{ backgroundColor: "red", width: "100%" }}>
+              <Text h1>{v.name}</Text>
+            </TabView.Item>
+          ))}
+        </TabView>
+      </View>
       <FAB
         testID="add-question"
         icon={{ name: "add", color: "white" }}
@@ -171,7 +178,14 @@ export default function QuestionsListScreen() {
 
 const styles = StyleSheet.create({
   tab: {
-    flexGrow: 0,
+    flexGrow: 1,
+    height: "100%",
+    maxHeight: 60,
+  },
+  tabView: {
+    width: "100%",
+    height: "100%",
+    flexGrow: 1,
   },
   listItem: {
     width: "100%",
@@ -216,7 +230,11 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
     paddingVertical: 5,
     flexGrow: 1,
+    height: "100%",
+    width: "100%",
   },
 });
