@@ -64,3 +64,7 @@ Currently, the repository maintains 3 github-actions workflows (pipelines), name
   eas build --platform android --profile preview --non-interactive
   ```
   Whenever `main` gets pushed or the `CI` pipeline executes successfully, the `EAS Build (android)` pipeline executes. It is also possible to execute this workflow manually through the repository's `Github Actions` section. 
+
+# Deploy
+This project uses `Expo` to maintaing app builds and distribute it. A free `Expo` account is maintained and it's `EXPO_SECRET` token is configured in the repo's workflow environment. 
+Currently, only `android` (APK) builds are supported, and are made available to internal distribution through `Expo`-generated links. The repository supports Continuous Deployment through `GitHub Actions` workflows, building the app at `Expo` whenever the `main` branch is pushed. See more at the `Pipelines` section. 
