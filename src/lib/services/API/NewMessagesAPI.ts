@@ -7,7 +7,7 @@ import {
 import { db } from "../../utils/firebase";
 import { IMessage, Message, MessagesDB } from "../../../definitions";
 
-export class MessagesAPI {
+export class NewMessagesAPI {
   private readonly messagesDB: MessagesDB;
   static readonly roomsRef: CollectionReference = collection(db, "rooms");
 
