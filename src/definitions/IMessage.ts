@@ -7,3 +7,15 @@ export interface IMessage {
   user: User;
   rid: string;
 }
+
+export type Message = Omit<IMessage, "_id">;
+
+export type IMessageProps = keyof IMessage;
+
+export interface MessagesDB {
+  createMessage: (userData: Message) => Promise<IMessage>;
+  getMessagesByProperty: (
+    property: IMessageProps,
+    value: string
+  ) => Promise<IMessage[]>;
+}
