@@ -1,4 +1,4 @@
-import { UsersAPI } from "./API/UsersAPI";
+import { UsersAPI } from "./API";
 import { FirebaseUsersDB } from "./firebase/UsersDB";
 
-export default new UsersAPI(new FirebaseUsersDB())
+export const FirebaseUsersAPI = new UsersAPI(new FirebaseUsersDB())
