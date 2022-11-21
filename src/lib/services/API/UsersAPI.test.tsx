@@ -1,5 +1,5 @@
 import { UsersAPI } from "./";
-import { UsersDB } from "../../../definitions/IUser";
+import { IUser, UsersDB } from "../../../definitions/IUser";
 
 const mockUsersDB: (args: {
   createUser?: any;
@@ -35,7 +35,7 @@ describe("UsersAPI", () => {
     expect(currentUsersDB.createUser).toBeCalled();
   });
   it("Throws error when DB method 'createUser' throws error", async () => {
-    const errorMessage = "Test error throwing"
+    const errorMessage = "Test error throwing";
     const api = new UsersAPI(
       mockUsersDB({
         createUser: () => {
@@ -52,5 +52,47 @@ describe("UsersAPI", () => {
         photoURL: "error photoURL",
       });
     }).rejects.toThrow(errorMessage);
+  });
+  it("Returns IUser when search by email", async () => {
+    const api = new UsersAPI(
+      mockUsersDB({
+        getUserByProperty: (property: any, val: any) => {
+          if (property === "email" && val === "roberto@gmail.com") {
+            return {
+              _id: 1,
+              createdAt: new Date(),
+              email: "roberto@gmail.com",
+              name: "roberto",
+              photoURL: "sdjfiasjdfisdj",
+            };
+          }
+          return null;
+        },
+      })
+    );
+
+    const response = await api.getUserByEmail("roberto@gmail.com");
+    expect(response?._id).toEqual(1);
+  });
+  it("Returns null when search by email hits nothing", async () => {
+    const api = new UsersAPI(
+      mockUsersDB({
+        getUserByProperty: (property: any, val: any) => {
+          if (property === "email" && val === "roberto@gmail.com") {
+            return {
+              _id: 1,
+              createdAt: new Date(),
+              email: "roberto@gmail.com",
+              name: "roberto",
+              photoURL: "sdjfiasjdfisdj",
+            };
+          }
+          return null;
+        },
+      })
+    );
+
+    const response = await api.getUserByEmail("karol@gmail.com");
+    expect(response?._id).not.toBeTruthy();
   });
 });
