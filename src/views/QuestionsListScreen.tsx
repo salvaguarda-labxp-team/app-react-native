@@ -1,14 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import Modal from "react-native-modal";
 import { Text, View, StyleSheet, Pressable, ScrollView } from "react-native";
 import {
   Input,
-  ButtonGroup,
   FAB,
-  ListItem,
   Tab,
-  TabView,
 } from "react-native-elements";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AuthenticationAPI, QuestionsAPI } from "../lib/services";
@@ -16,8 +13,10 @@ import {
   IQuestion,
   SubjectsList,
   IQuestionSubject,
-  subjectsMap,
 } from "../definitions";
+import {
+  QuestionListTabView,
+} from "../components/questionsList";
 
 export default function QuestionsListScreen() {
   const [questions, setQuestions] = useState<IQuestion[]>([]);
@@ -82,6 +81,8 @@ export default function QuestionsListScreen() {
       setDescription("");
     }
   };
+
+  const onSubjectListItemPress = useCallback(() => {}, []);
 
   return (
     <View style={styles.container}>
@@ -163,43 +164,14 @@ export default function QuestionsListScreen() {
           </Pressable>
         </View>
       </Modal>
-      <View style={styles.tabView}>
-        <TabView
-          value={currentSubject}
-          onChange={setCurrentSubject}
-          animationType="spring"
-        >
-          {SubjectsList.map((v, k) => (
-            <TabView.Item
-              style={{ backgroundColor: "red", width: "100%" }}
-              key={k}
-            >
-              <ScrollView style={styles.scrollView}>
-                {questions
-                  .filter((q) => subjectsMap[q.subject].name === v.name)
-                  .map((q, i) => {
-                    return (
-                      <ListItem
-                        key={i}
-                        bottomDivider
-                        hasTVPreferredFocus={false}
-                        tvParallaxProperties={false}
-                        style={styles.listItem}
-                        onPress={() => {}}
-                      >
-                        <MaterialIcons name="person-outline" />
-                        <ListItem.Content>
-                          <ListItem.Title>{q.title}</ListItem.Title>
-                          <ListItem.Subtitle>{q.description}</ListItem.Subtitle>
-                        </ListItem.Content>
-                      </ListItem>
-                    );
-                  })}
-              </ScrollView>
-            </TabView.Item>
-          ))}
-        </TabView>
-      </View>
+      <QuestionListTabView
+        {...{
+          currentSubject,
+          onListItemPress: onSubjectListItemPress,
+          setCurrentSubject,
+          questions,
+        }}
+      />
       <FAB
         testID="add-question"
         icon={{ name: "add", color: "white" }}
