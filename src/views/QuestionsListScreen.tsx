@@ -2,21 +2,11 @@ import React, { useState, useEffect, useCallback } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import Modal from "react-native-modal";
 import { Text, View, StyleSheet, Pressable, ScrollView } from "react-native";
-import {
-  Input,
-  FAB,
-  Tab,
-} from "react-native-elements";
+import { Input, FAB, Tab } from "react-native-elements";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AuthenticationAPI, QuestionsAPI } from "../lib/services";
-import {
-  IQuestion,
-  SubjectsList,
-  IQuestionSubject,
-} from "../definitions";
-import {
-  QuestionListTabView,
-} from "../components/questionsList";
+import { IQuestion, SubjectsList, IQuestionSubject } from "../definitions";
+import { QuestionListTabView } from "../components/questionsList";
 
 export default function QuestionsListScreen() {
   const [questions, setQuestions] = useState<IQuestion[]>([]);

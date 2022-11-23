@@ -57,4 +57,6 @@ export const subjectsMap: SubjectsMap = {
   },
 } as const;
 
-export const SubjectsList: SubjectInfo[] = Object.entries(subjectsMap).map(([k, v]) => v);
+export const SubjectsList: SubjectInfo[] = Object.entries(subjectsMap).map(
+  ([k, v]) => v
+);
