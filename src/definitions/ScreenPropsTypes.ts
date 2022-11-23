@@ -12,6 +12,7 @@ export interface RootStackParamsList {
   QuestionsList: undefined;
   Menu: undefined;
   Test: undefined;
+  "Add Image": Record<string, string[]>;
 }
 
 export type LoginScreenProps = NativeStackScreenProps<
@@ -41,4 +42,8 @@ export type QuestionsListScreenProps = NativeStackScreenProps<
 export type MenuScreenProps = NativeStackScreenProps<
   RootStackParamsList,
   "Menu"
+>;
+export type AddImageScreenProps = NativeStackScreenProps<
+  RootStackParamsList,
+  "Add Image"
 >;

@@ -4,6 +4,6 @@ export { default as ForgotPasswordScreen } from "./ForgotPasswordScreen";
 export { default as ChatsListScreen } from "./ChatsListScreen";
 export { default as ChatScreen } from "./ChatScreen";
 export { default as TestScreen } from "./Menu";
-export { default as AddImage } from "./addImage";
+export { default as AddImage } from "./MediaSelectionControlScreen";
 export { default as Menu } from "./Menu";
 export { default as QuestionsListScreen } from "./QuestionsListScreen";
