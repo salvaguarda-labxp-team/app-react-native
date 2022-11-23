@@ -14,9 +14,9 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { AuthenticationAPI, QuestionsAPI } from "../lib/services";
 import {
   IQuestion,
-  subjectsMap,
-  SubjectInfo,
+  SubjectsList,
   IQuestionSubject,
+  subjectsMap,
 } from "../definitions";
 
 export default function QuestionsListScreen() {
@@ -28,9 +28,6 @@ export default function QuestionsListScreen() {
   const [dropDrownExpanded, setDropDownExpanded] = useState(false);
   const [currentSubject, setCurrentSubject] = useState(0);
   const [chosenSubject, setChosenSubject] = useState<IQuestionSubject | "">("");
-  const [subjectsList, setSubjectsList] = useState(
-    Object.entries(subjectsMap).map(([k, v]) => v)
-  );
   const [availableSubjects, setAvailableSubjects] = useState([
     { label: "Matemática", value: "Math" },
     { label: "Português", value: "Port" },
@@ -57,7 +54,6 @@ export default function QuestionsListScreen() {
     };
     fetchData().catch(console.error);
   });
-
   const createQuestion = async () => {
     const currentUser = AuthenticationAPI.getCurrentUser();
     if (
@@ -78,7 +74,7 @@ export default function QuestionsListScreen() {
       } catch (e: any) {
         console.log(e);
       }
-      
+
       setIsCQButtonDisabled(false);
       setModalVisible(false);
       setQuestionTitle("");
@@ -103,7 +99,7 @@ export default function QuestionsListScreen() {
           }}
           variant="primary"
         >
-          {subjectsList.map((v, i) => (
+          {SubjectsList.map((v, i) => (
             <Tab.Item
               title={v.name}
               titleStyle={{ fontSize: 12 }}
@@ -173,12 +169,33 @@ export default function QuestionsListScreen() {
           onChange={setCurrentSubject}
           animationType="spring"
         >
-          {subjectsList.map((v, k) => (
+          {SubjectsList.map((v, k) => (
             <TabView.Item
               style={{ backgroundColor: "red", width: "100%" }}
               key={k}
             >
-              <Text h1>{v.name}</Text>
+              <ScrollView style={styles.scrollView}>
+                {questions
+                  .filter((q) => subjectsMap[q.subject].name === v.name)
+                  .map((q, i) => {
+                    return (
+                      <ListItem
+                        key={i}
+                        bottomDivider
+                        hasTVPreferredFocus={false}
+                        tvParallaxProperties={false}
+                        style={styles.listItem}
+                        onPress={() => {}}
+                      >
+                        <MaterialIcons name="person-outline" />
+                        <ListItem.Content>
+                          <ListItem.Title>{q.title}</ListItem.Title>
+                          <ListItem.Subtitle>{q.description}</ListItem.Subtitle>
+                        </ListItem.Content>
+                      </ListItem>
+                    );
+                  })}
+              </ScrollView>
             </TabView.Item>
           ))}
         </TabView>

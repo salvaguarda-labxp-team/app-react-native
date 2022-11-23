@@ -9,10 +9,10 @@ export type IQuestionSubject =
   | "Philo"
   | "Essay";
 
-export type SubjectInfo = {
+export interface SubjectInfo {
   name: string;
   icon: string;
-};
+}
 
 type SubjectsMap = {
   [subject in IQuestionSubject]: SubjectInfo;
@@ -56,3 +56,5 @@ export const subjectsMap: SubjectsMap = {
     icon: "edit",
   },
 } as const;
+
+export const SubjectsList: SubjectInfo[] = Object.entries(subjectsMap).map(([k, v]) => v);
