@@ -2,7 +2,6 @@ import React, { Dispatch, SetStateAction, useMemo } from "react";
 import {
   StyleSheet,
   ScrollView,
-  GestureResponderEvent,
   View,
 } from "react-native";
 import { ListItem, TabView } from "react-native-elements";
@@ -36,7 +35,7 @@ export const SubjectQuestionList: React.FC<{
     [questions, onListItemPress]
   );
   return (
-    <TabView.Item style={{ backgroundColor: "red", width: "100%" }}>
+    <TabView.Item style={styles.tabViewItem}>
       <ScrollView style={styles.scrollView}>{handleQuestionList}</ScrollView>
     </TabView.Item>
   );
@@ -84,6 +83,9 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     flexGrow: 1,
+  },
+  tabViewItem: {
+    width: "100%",
   },
   listItem: {
     width: "100%",

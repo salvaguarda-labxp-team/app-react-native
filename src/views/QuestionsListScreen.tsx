@@ -178,19 +178,6 @@ const styles = StyleSheet.create({
     height: "100%",
     maxHeight: 60,
   },
-  tabView: {
-    width: "100%",
-    height: "100%",
-    flexGrow: 1,
-  },
-  listItem: {
-    width: "100%",
-    backgroundColor: "white",
-    alignItems: "center",
-  },
-  scrollView: {
-    width: "100%",
-  },
   modalWindow: {
     width: "100%",
     backgroundColor: "white",
