@@ -5,10 +5,17 @@ import { Text, View, StyleSheet, Pressable, ScrollView } from "react-native";
 import { Input, FAB, Tab } from "react-native-elements";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AuthenticationAPI, QuestionsAPI } from "../lib/services";
-import { IQuestion, SubjectsList, IQuestionSubject } from "../definitions";
+import {
+  IQuestion,
+  SubjectsList,
+  IQuestionSubject,
+  QuestionsListScreenProps,
+} from "../definitions";
 import { QuestionListTabView } from "../components/questionsList";
 
-export default function QuestionsListScreen() {
+const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
+  navigation,
+}) => {
   const [questions, setQuestions] = useState<IQuestion[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [description, setDescription] = useState("");
@@ -33,13 +40,11 @@ export default function QuestionsListScreen() {
   useEffect(() => {
     const fetchData = async () => {
       const user = AuthenticationAPI.getCurrentUser();
-      setTimeout(async () => {
-        if (user != null && user.email) {
-          setQuestions(
-            await QuestionsAPI.getUserQuestionsByStatus(user.email, "pending")
-          );
-        }
-      }, 2000);
+      if (user?.email != null && user?.email?.length > 0) {
+        setQuestions(
+          await QuestionsAPI.getUserQuestionsByStatus(user.email, "pending")
+        );
+      }
     };
     fetchData().catch(console.error);
   });
@@ -72,7 +77,16 @@ export default function QuestionsListScreen() {
     }
   };
 
-  const onSubjectListItemPress = useCallback(() => {}, []);
+  const onSubjectListItemPress = useCallback(
+    (question: IQuestion) => {
+      console.log(question.title)
+      navigation.navigate("Chat", {
+        roomId: question.rid,
+        roomName: question.title,
+      });
+    },
+    [navigation?.navigate]
+  );
 
   return (
     <View style={styles.container}>
@@ -170,7 +184,9 @@ export default function QuestionsListScreen() {
       />
     </View>
   );
-}
+};
+
+export default QuestionsListScreen;
 
 const styles = StyleSheet.create({
   tab: {
