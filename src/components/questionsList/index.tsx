@@ -1,10 +1,7 @@
 import React, { Dispatch, SetStateAction, useMemo } from "react";
-import {
-  StyleSheet,
-  ScrollView,
-  View,
-} from "react-native";
-import { ListItem, TabView } from "react-native-elements";
+import { StyleSheet, ScrollView, View } from "react-native";
+import { ListItem } from "react-native-elements";
+import { TabView } from "@rneui/themed";
 import { MaterialIcons } from "@expo/vector-icons";
 import { IQuestion, SubjectsList, subjectsMap } from "../../definitions";
 

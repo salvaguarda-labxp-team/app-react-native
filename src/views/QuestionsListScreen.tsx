@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import Modal from "react-native-modal";
 import { Text, View, StyleSheet, Pressable, ScrollView } from "react-native";
-import { Input, FAB, Tab } from "react-native-elements";
+import { Input, FAB } from "react-native-elements";
+import { Tab } from "@rneui/themed";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AuthenticationAPI, QuestionsAPI } from "../lib/services";
 import {
