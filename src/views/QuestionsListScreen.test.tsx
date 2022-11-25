@@ -9,7 +9,6 @@ import "@testing-library/jest-dom";
 import QuestionsListScreen from "./QuestionsListScreen";
 import { act } from "react-test-renderer";
 
-
 describe("CreateQuestions", () => {
   // TODO remove this test?
   it("Renders 4 children on React tree", () => {

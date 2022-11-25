@@ -39,7 +39,6 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
   ]);
 
   const fetchData = async () => {
-    console.log('Fetching data');
     const user = AuthenticationAPI.getCurrentUser();
     if (user?.email != null && user?.email?.length > 0) {
       setQuestions(
@@ -83,7 +82,7 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
 
   const onSubjectListItemPress = useCallback(
     (question: IQuestion) => {
-      console.log(question.title)
+      console.log(question.title);
       navigation.navigate("Chat", {
         roomId: question.rid,
         roomName: question.title,
@@ -97,16 +96,13 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
       <ScrollView
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        style={styles.tab}
+        style={styles.scrollTab}
       >
         <Tab
           value={currentSubject}
           onChange={(e) => setCurrentSubject(e)}
-          indicatorStyle={{
-            backgroundColor: "white",
-            height: 3,
-          }}
           variant="primary"
+          disableIndicator={true}
         >
           {SubjectsList.map((v, i) => (
             <Tab.Item
@@ -117,6 +113,9 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
                 type: "material",
                 color: "white",
               }}
+              buttonStyle={(active) => ({
+                backgroundColor: active ? "#8f63aa" : "#6d388c",
+              })}
               key={i}
             />
           ))}
@@ -185,6 +184,7 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
         icon={{ name: "add", color: "white" }}
         placement="right"
         onPress={() => setModalVisible(!modalVisible)}
+        buttonStyle={styles.fab}
       />
     </View>
   );
@@ -193,10 +193,15 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
 export default QuestionsListScreen;
 
 const styles = StyleSheet.create({
-  tab: {
+  scrollTab: {
     flexGrow: 1,
     height: "100%",
     maxHeight: 60,
+    backgroundColor: "#6d388c",
+  },
+  fab: {
+    backgroundColor: "#ea5b1c",
+    color: "#ea5b1c",
   },
   modalWindow: {
     width: "100%",
@@ -224,7 +229,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   buttonClose: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "#ea5b1c",
   },
   buttonCloseDisabled: {
     opacity: 0.4,
