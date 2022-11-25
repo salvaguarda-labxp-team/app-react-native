@@ -33,7 +33,13 @@ export default (): JSX.Element => (
       component={Menu}
       options={{ headerShown: false }}
     />
-    <Stack.Screen name="Chat" component={ChatScreen} />
+    <Stack.Screen
+      name="Chat"
+      component={ChatScreen}
+      options={({ route }) => ({
+        title: (route.params as { roomName?: string }).roomName ?? "Chat",
+      })}
+    />
     <Stack.Screen
       name="Add Image"
       options={{ title: "Coletar imagens" }}
