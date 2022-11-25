@@ -40,7 +40,7 @@ export class FirebaseMessagesDB implements MessagesDB {
       createdAt: doc.data().createdAt.toDate(),
       text: doc.data().text,
       user: doc.data().user,
-      rid: doc.data().rid
+      rid: doc.data().rid,
     }));
   }
 }

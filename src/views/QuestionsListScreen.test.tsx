@@ -9,11 +9,13 @@ import "@testing-library/jest-dom";
 import QuestionsListScreen from "./QuestionsListScreen";
 import { act } from "react-test-renderer";
 
+
 describe("CreateQuestions", () => {
-  it("Renders 2 children on React tree", () => {
+  // TODO remove this test?
+  it("Renders 4 children on React tree", () => {
     const component = render(<QuestionsListScreen />);
     const tree = component.toJSON();
-    expect(tree.children.length).toBe(2);
+    expect(tree.children.length).toBe(4);
   });
   it("Does not show modal before press", () => {
     render(<QuestionsListScreen />);

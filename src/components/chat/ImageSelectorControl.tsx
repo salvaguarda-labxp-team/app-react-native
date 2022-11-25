@@ -88,11 +88,7 @@ export const SelectedImagesManagingActions: React.FC<
   return (
     <>
       <View style={managingActionsStyles.ActionButtonContainerLeft}>
-        <ActionButton
-          testID="Cancel"
-          icon="cancel"
-          onPress={onCancelClick}
-        />
+        <ActionButton testID="Cancel" icon="cancel" onPress={onCancelClick} />
       </View>
 
       <View style={managingActionsStyles.ActionButtonContainerRight}>

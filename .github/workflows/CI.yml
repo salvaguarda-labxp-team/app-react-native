@@ -29,4 +29,4 @@ jobs:
           target_branch: main
           source_ref: ${{ github.ref }}
           github_token: ${{ github.token }}
-          commit_message_template: '[Automated] Merged bradevelopment into main'
+          commit_message_template: "[Automated] Merged bradevelopment into main"

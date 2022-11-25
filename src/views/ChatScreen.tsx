@@ -22,9 +22,7 @@ const ChatScreen = ({ route, navigation }: ChatScreenProps) => {
 
   useLayoutEffect(() => {
     const fetchData = async () => {
-      setTimeout(async () => {
-        setMessages(await MessagesAPI.getMessagesFromRoom(roomId));
-      }, 1000);
+      setMessages(await MessagesAPI.getMessagesFromRoom(roomId));
     };
 
     fetchData().catch(console.error);
@@ -39,7 +37,7 @@ const ChatScreen = ({ route, navigation }: ChatScreenProps) => {
   }, []);
 
   const goToChatList = () => {
-    navigation.navigate("ChatList");
+    navigation.goBack();
   };
 
   const onSend = useCallback((messages: IMessage[] = []) => {
