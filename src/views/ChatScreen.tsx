@@ -15,17 +15,22 @@ import { ChatScreenProps, IUser } from "../definitions";
 import { auth } from "../lib/utils/firebase";
 import { useMediaControls } from "../hooks/useMediaControl";
 import { MediaInput } from "../components/chat/MediaInput";
+import { wait } from "../lib/utils";
 
 const ChatScreen = ({ route, navigation }: ChatScreenProps) => {
   const { roomId, roomName } = route.params;
   const [messages, setMessages] = useState<IMessage[]>([]);
 
-  useLayoutEffect(() => {
-    const fetchData = async () => {
-      setMessages(await MessagesAPI.getMessagesFromRoom(roomId));
-    };
+  const fetchData = async () => {
+    setMessages(await MessagesAPI.getMessagesFromRoom(roomId));
+  };
 
+  useEffect(() => {
     fetchData().catch(console.error);
+  }, [roomId]);
+
+  useLayoutEffect(() => {
+    wait(10000).then(() => fetchData().catch(console.error));
   });
 
   useEffect(() => {

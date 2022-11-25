@@ -56,7 +56,9 @@ export class QuestionsAPI {
       where("rid", "==", rid)
     );
     const querySnapshotQuestions = await getDocs(questionsQuery);
-    updateDoc(doc(this.questionsRef, querySnapshotQuestions.docs[0].id), { lm });
+    updateDoc(doc(this.questionsRef, querySnapshotQuestions.docs[0].id), {
+      lm,
+    });
   }
 
   static async getUserQuestionsByStatus(
