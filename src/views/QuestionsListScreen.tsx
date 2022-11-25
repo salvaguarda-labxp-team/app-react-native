@@ -1,17 +1,30 @@
-import { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import Modal from "react-native-modal";
-import { Text, View, StyleSheet, Pressable } from "react-native";
-import { Input, ButtonGroup, FAB } from "react-native-elements";
+import { Text, View, StyleSheet, Pressable, ScrollView } from "react-native";
+import { Input, FAB } from "react-native-elements";
+import { Tab } from "@rneui/themed";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AuthenticationAPI, QuestionsAPI } from "../lib/services";
+import {
+  IQuestion,
+  SubjectsList,
+  IQuestionSubject,
+  QuestionsListScreenProps,
+} from "../definitions";
+import { QuestionListTabView } from "../components/questionsList";
 
-export default function QuestionsListScreen() {
+const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
+  navigation,
+}) => {
+  const [questions, setQuestions] = useState<IQuestion[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [description, setDescription] = useState("");
   const [questionTitle, setQuestionTitle] = useState("");
+  const [isCQButtonDisabled, setIsCQButtonDisabled] = useState<boolean>(false);
   const [dropDrownExpanded, setDropDownExpanded] = useState(false);
-  const [chosenSubject, setChosenSubject] = useState("");
+  const [currentSubject, setCurrentSubject] = useState(0);
+  const [chosenSubject, setChosenSubject] = useState<IQuestionSubject | "">("");
   const [availableSubjects, setAvailableSubjects] = useState([
     { label: "Matemática", value: "Math" },
     { label: "Português", value: "Port" },
@@ -25,16 +38,28 @@ export default function QuestionsListScreen() {
     { label: "Artes", value: "Arts" },
   ]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const user = AuthenticationAPI.getCurrentUser();
+      if (user?.email != null && user?.email?.length > 0) {
+        setQuestions(
+          await QuestionsAPI.getUserQuestionsByStatus(user.email, "pending")
+        );
+      }
+    };
+    fetchData().catch(console.error);
+  });
   const createQuestion = async () => {
     const currentUser = AuthenticationAPI.getCurrentUser();
     if (
-      currentUser &&
-      chosenSubject &&
+      currentUser != null &&
+      chosenSubject !== "" &&
       description &&
       questionTitle &&
       currentUser.email
     ) {
       try {
+        setIsCQButtonDisabled(true);
         await QuestionsAPI.createQuestion(
           questionTitle,
           description,
@@ -45,6 +70,7 @@ export default function QuestionsListScreen() {
         console.log(e);
       }
 
+      setIsCQButtonDisabled(false);
       setModalVisible(false);
       setQuestionTitle("");
       setChosenSubject("");
@@ -52,8 +78,48 @@ export default function QuestionsListScreen() {
     }
   };
 
+  const onSubjectListItemPress = useCallback(
+    (question: IQuestion) => {
+      console.log(question.title)
+      navigation.navigate("Chat", {
+        roomId: question.rid,
+        roomName: question.title,
+      });
+    },
+    [navigation?.navigate]
+  );
+
   return (
     <View style={styles.container}>
+      <ScrollView
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        style={styles.tab}
+      >
+        <Tab
+          value={currentSubject}
+          onChange={(e) => setCurrentSubject(e)}
+          indicatorStyle={{
+            backgroundColor: "white",
+            height: 3,
+          }}
+          variant="primary"
+        >
+          {SubjectsList.map((v, i) => (
+            <Tab.Item
+              title={v.name}
+              titleStyle={{ fontSize: 12 }}
+              icon={{
+                name: v.icon,
+                type: "material",
+                color: "white",
+              }}
+              key={i}
+            />
+          ))}
+        </Tab>
+      </ScrollView>
+
       <Modal
         testID="question-modal"
         avoidKeyboard={true}
@@ -91,14 +157,26 @@ export default function QuestionsListScreen() {
           />
 
           <Pressable
-            style={[styles.button, styles.buttonClose]}
+            style={[
+              styles.button,
+              styles.buttonClose,
+              ...(isCQButtonDisabled ? [styles.buttonCloseDisabled] : []),
+            ]}
             onPress={createQuestion}
+            disabled={isCQButtonDisabled}
           >
             <Text style={styles.textStyle}>Enviar dúvida</Text>
           </Pressable>
         </View>
       </Modal>
-
+      <QuestionListTabView
+        {...{
+          currentSubject,
+          onListItemPress: onSubjectListItemPress,
+          setCurrentSubject,
+          questions,
+        }}
+      />
       <FAB
         testID="add-question"
         icon={{ name: "add", color: "white" }}
@@ -107,9 +185,16 @@ export default function QuestionsListScreen() {
       />
     </View>
   );
-}
+};
+
+export default QuestionsListScreen;
 
 const styles = StyleSheet.create({
+  tab: {
+    flexGrow: 1,
+    height: "100%",
+    maxHeight: 60,
+  },
   modalWindow: {
     width: "100%",
     backgroundColor: "white",
@@ -138,6 +223,9 @@ const styles = StyleSheet.create({
   buttonClose: {
     backgroundColor: "#2196F3",
   },
+  buttonCloseDisabled: {
+    opacity: 0.4,
+  },
   modalText: {
     fontWeight: "bold",
     marginBottom: 15,
@@ -145,7 +233,11 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
     paddingVertical: 5,
     flexGrow: 1,
+    height: "100%",
+    width: "100%",
   },
 });

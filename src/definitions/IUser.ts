@@ -11,5 +11,8 @@ export type IUserProps = keyof IUser;
 
 export interface UsersDB {
   createUser: (userData: User) => Promise<IUser>;
-  getUserByProperty: (property: IUserProps, value: string) => Promise<IUser | null>;
+  getUserByProperty: (
+    property: IUserProps,
+    value: string
+  ) => Promise<IUser | null>;
 }
