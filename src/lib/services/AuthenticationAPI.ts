@@ -1,11 +1,11 @@
 import {
-  User,
   signOut,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   updateProfile,
   UserCredential,
 } from "firebase/auth";
+import { ILoggedUser } from "../../definitions/IUser.js";
 import { auth } from "../utils/firebase.js";
 
 export class AuthenticationAPI {
@@ -37,11 +37,9 @@ export class AuthenticationAPI {
     });
   }
 
-  static getCurrentUser(): Pick<
-    User,
-    "uid" | "displayName" | "email" | "photoURL"
-  > | null {
+  static getCurrentUser(): ILoggedUser | null {
     if (!auth.currentUser) return null;
+
     const { uid, displayName, email, photoURL } = auth.currentUser;
 
     const currentUser = {
@@ -50,6 +48,7 @@ export class AuthenticationAPI {
       email,
       photoURL,
     };
+
     return currentUser;
   }
 }
