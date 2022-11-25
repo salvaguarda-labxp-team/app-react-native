@@ -11,15 +11,16 @@ import {
 } from "firebase/firestore";
 import { db } from "../utils/firebase";
 import { IMessage } from "react-native-gifted-chat/lib/Models";
+import { QuestionsAPI } from "./QuestionsAPI";
 
 export class MessagesAPI {
   static readonly chatsRef: CollectionReference = collection(db, "messages");
   static readonly roomsRef: CollectionReference = collection(db, "rooms");
 
-  static sendTextMessage(
+  static async sendTextMessage(
     { _id, createdAt, text, user }: IMessage,
     roomId: string
-  ): void {
+  ): Promise<void> {
     addDoc(MessagesAPI.chatsRef, {
       _id,
       createdAt,
@@ -28,9 +29,10 @@ export class MessagesAPI {
       rid: roomId,
     });
 
-    updateDoc(doc(this.roomsRef, roomId), {
+    await updateDoc(doc(this.roomsRef, roomId), {
       lm: createdAt,
     });
+    await QuestionsAPI.updateQuestionLmByRoomId(roomId, createdAt);
   }
 
   static async getMessagesFromRoom(rid: string): Promise<IMessage[]> {

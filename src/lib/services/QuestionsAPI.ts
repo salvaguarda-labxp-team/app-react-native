@@ -7,6 +7,7 @@ import {
   where,
   getDocs,
   CollectionReference,
+  doc,
 } from "firebase/firestore";
 import { db } from "../utils/firebase";
 import { IQuestionSubject, IQuestion } from "../../definitions";
@@ -24,8 +25,10 @@ export class QuestionsAPI {
     subject: IQuestionSubject,
     creatorId: string
   ): Promise<void> {
+    const createdAt = new Date();
     const question = await addDoc(QuestionsAPI.questionsRef, {
-      createdAt: new Date(),
+      createdAt,
+      lm: new Date(),
       title,
       description,
       subject,
@@ -44,6 +47,18 @@ export class QuestionsAPI {
     updateDoc(question, { rid });
   }
 
+  static async updateQuestionLmByRoomId(
+    rid: string,
+    lm: number | Date
+  ): Promise<void> {
+    const questionsQuery = query(
+      QuestionsAPI.questionsRef,
+      where("rid", "==", rid)
+    );
+    const querySnapshotQuestions = await getDocs(questionsQuery);
+    updateDoc(doc(this.questionsRef, querySnapshotQuestions.docs[0].id), { lm });
+  }
+
   static async getUserQuestionsByStatus(
     uid: string,
     status: string
@@ -52,13 +67,14 @@ export class QuestionsAPI {
       QuestionsAPI.questionsRef,
       where("creatorId", "==", uid),
       where("status", "==", status),
-      orderBy("createdAt", "desc")
+      orderBy("lm", "desc")
     );
     const querySnapshotQuestions = await getDocs(questionsQuery);
     return querySnapshotQuestions.docs.map((doc) => ({
       _id: doc.id,
       rid: doc.data().rid,
       createdAt: doc.data().createdAt.toDate(),
+      lm: doc.data().lm.toDate(),
       title: doc.data().title,
       description: doc.data().description,
       subject: doc.data().subject,
@@ -78,13 +94,14 @@ export class QuestionsAPI {
       where("creatorId", "==", uid),
       where("status", "==", status),
       where("subject", "==", subject),
-      orderBy("createdAt", "desc")
+      orderBy("lm", "desc")
     );
     const querySnapshotQuestions = await getDocs(questionsQuery);
     return querySnapshotQuestions.docs.map((doc) => ({
       _id: doc.id,
       rid: doc.data().rid,
       createdAt: doc.data().createdAt,
+      lm: doc.data().lm.toDate(),
       title: doc.data().title,
       description: doc.data().description,
       subject: doc.data().subject,
@@ -98,13 +115,14 @@ export class QuestionsAPI {
     const questionsQuery = query(
       QuestionsAPI.questionsRef,
       where("status", "==", status),
-      orderBy("createdAT", "desc")
+      orderBy("createdAt", "desc")
     );
     const querySnapshotQuestions = await getDocs(questionsQuery);
     return querySnapshotQuestions.docs.map((doc) => ({
       _id: doc.id,
       rid: doc.data().rid,
-      createdAt: doc.data().createdAt,
+      createdAt: doc.data().createdAt.toDate(),
+      lm: doc.data().lm.toDate(),
       title: doc.data().title,
       description: doc.data().description,
       subject: doc.data().subject,

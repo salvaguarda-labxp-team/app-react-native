@@ -30,8 +30,8 @@ export const QuestionItem: React.FC<{
           <View style={styles.labelRow}>
             <MaterialIcons name="edit" size={12} color="black" />
             <Text style={styles.labelText}>
-              {question.createdAt.toLocaleDateString()} -{" "}
-              {question.createdAt.toLocaleTimeString()}
+              {question.lm.toLocaleDateString()} -{" "}
+              {question.lm.toLocaleTimeString()}
             </Text>
           </View>
 

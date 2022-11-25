@@ -6,6 +6,7 @@ export type IQuestion = {
   _id: string;
   rid: string;
   createdAt: Date;
+  lm: Date;
   title: string;
   description: string;
   subject: IQuestionSubject;
