@@ -38,17 +38,19 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
     { label: "Artes", value: "Arts" },
   ]);
 
+  const fetchData = async () => {
+    console.log('Fetching data');
+    const user = AuthenticationAPI.getCurrentUser();
+    if (user?.email != null && user?.email?.length > 0) {
+      setQuestions(
+        await QuestionsAPI.getUserQuestionsByStatus(user.email, "pending")
+      );
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const user = AuthenticationAPI.getCurrentUser();
-      if (user?.email != null && user?.email?.length > 0) {
-        setQuestions(
-          await QuestionsAPI.getUserQuestionsByStatus(user.email, "pending")
-        );
-      }
-    };
     fetchData().catch(console.error);
-  });
+  }, []);
   const createQuestion = async () => {
     const currentUser = AuthenticationAPI.getCurrentUser();
     if (
@@ -70,6 +72,7 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
         console.log(e);
       }
 
+      fetchData().catch(console.error);
       setIsCQButtonDisabled(false);
       setModalVisible(false);
       setQuestionTitle("");
