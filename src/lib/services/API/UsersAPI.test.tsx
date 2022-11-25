@@ -27,10 +27,11 @@ describe("UsersAPI", () => {
     const api = new UsersAPI(currentUsersDB);
 
     await api.addUser({
-      createdAt: new Date(),
       email: "email",
       name: "name",
       photoURL: "photoURL",
+      userAuthId: "uid",
+      role: "student",
     });
     expect(currentUsersDB.createUser).toBeCalled();
   });
@@ -46,10 +47,11 @@ describe("UsersAPI", () => {
 
     await expect(async () => {
       await api.addUser({
-        createdAt: new Date(),
         email: "error email",
         name: "error name",
         photoURL: "error photoURL",
+        userAuthId: "uid",
+        role: "student",
       });
     }).rejects.toThrow(errorMessage);
   });
@@ -64,6 +66,8 @@ describe("UsersAPI", () => {
               email: "roberto@gmail.com",
               name: "roberto",
               photoURL: "sdjfiasjdfisdj",
+              userAuthId: "uid",
+              role: "student",
             };
           }
           return null;
@@ -85,6 +89,8 @@ describe("UsersAPI", () => {
               email: "roberto@gmail.com",
               name: "roberto",
               photoURL: "sdjfiasjdfisdj",
+              userAuthId: "uid",
+              role: "student",
             };
           }
           return null;

@@ -6,14 +6,18 @@ export interface IUser {
   name: string | null;
   email: string | null;
   photoURL: string | null;
+  userAuthId: string;
+  role: Role;
 }
 
-export type ILoggedUser = Pick<
+export type Role = "student" | "monitor";
+
+export type LoggedUser = Pick<
   FirebaseUser,
   "uid" | "displayName" | "email" | "photoURL"
 >;
 
-export type User = Omit<IUser, "_id">;
+export type User = Omit<IUser, "_id" | "createdAt">;
 
 export type IUserProps = keyof IUser;
 
