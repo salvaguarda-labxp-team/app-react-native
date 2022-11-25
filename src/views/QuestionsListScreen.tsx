@@ -47,8 +47,12 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
     }
   };
 
-  useEffect(() => {
+  const updateList = () => {
     fetchData().catch(console.error);
+  };
+
+  useEffect(() => {
+    updateList();
   }, []);
   const createQuestion = async () => {
     const currentUser = AuthenticationAPI.getCurrentUser();
@@ -177,6 +181,7 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
           onListItemPress: onSubjectListItemPress,
           setCurrentSubject,
           questions,
+          onListRefresh: updateList,
         }}
       />
       <FAB

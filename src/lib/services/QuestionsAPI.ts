@@ -7,17 +7,9 @@ import {
   where,
   getDocs,
   CollectionReference,
-  documentId,
 } from "firebase/firestore";
 import { db } from "../utils/firebase";
-import {
-  IRoom,
-  IUser,
-  IRoomType,
-  IQuestionSubject,
-  IQuestion,
-} from "../../definitions";
-import { SubscriptionsAPI } from "./SubscriptionsAPI";
+import { IQuestionSubject, IQuestion } from "../../definitions";
 import { RoomsAPI } from "./RoomsAPI";
 
 export class QuestionsAPI {
@@ -66,7 +58,7 @@ export class QuestionsAPI {
     return querySnapshotQuestions.docs.map((doc) => ({
       _id: doc.id,
       rid: doc.data().rid,
-      createdAt: doc.data().createdAt,
+      createdAt: doc.data().createdAt.toDate(),
       title: doc.data().title,
       description: doc.data().description,
       subject: doc.data().subject,
