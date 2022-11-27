@@ -20,6 +20,8 @@ export class UsersAPI {
       return null;
     }
   }
+
+  public async getUserByAuthId(userAuthId: string): Promise<IUser | null> {
+    return await this.usersDB.getUserByProperty("userAuthId", userAuthId);
+  }
 }
-
-

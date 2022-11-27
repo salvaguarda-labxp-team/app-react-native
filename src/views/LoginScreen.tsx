@@ -5,18 +5,34 @@ import { useForm } from "react-hook-form";
 import { LoginForm, LoginFormData } from "../components/form/LoginForm";
 import { LoginScreenProps } from "../definitions/ScreenPropsTypes.js";
 import { AuthenticationAPI } from "../lib/services";
+import { FirebaseUsersAPI } from "../lib/services/FirebaseUsersAPI";
 import { auth } from "../lib/utils/firebase";
 
 const LoginPage = ({ navigation }: LoginScreenProps): JSX.Element => {
+  const fetchAndSaveUser = async (userAuthId: string): Promise<void> => {
+    const user = await FirebaseUsersAPI.getUserByAuthId(userAuthId);
+    // TODO: save user
+  };
+
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // Usuário logou
-        navigation.replace("Menu");
-      } else {
-        // Usuário deslogou
+    onAuthStateChanged(auth, (loggedUser) => {
+      const handleAuthStateChange = async (): Promise<void> => {
+        if (loggedUser != null) {
+          // Usuário logou
+          navigation.replace("Menu");
+          await fetchAndSaveUser(loggedUser.uid);
+        } else {
+          // Usuário deslogou
+          navigation.canGoBack() && navigation.popToTop();
+        }
+      };
+
+      const handleError = (): void => {
+        alert("Erro ao fazer login. Por favor, tente novamente mais tarde.");
         navigation.canGoBack() && navigation.popToTop();
-      }
+      };
+
+      handleAuthStateChange().catch(handleError);
     });
   }, []);
 

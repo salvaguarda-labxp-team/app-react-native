@@ -49,15 +49,17 @@ export class FirebaseUsersDB implements UsersDB {
     ) {
       return null;
     } else {
-      const doc = querySnapshot.docs[0].data();
+      const doc = querySnapshot.docs[0];
+      const docData = doc.data();
+
       return {
         _id: doc.id,
-        createdAt: doc.data().createdAt.toDate(),
-        name: doc.data().name,
-        email: doc.data().email,
-        photoURL: doc.data().photoURL,
-        userAuthId: doc.data().userAuthId,
-        role: doc.data().role,
+        createdAt: docData.createdAt.toDate(),
+        name: docData.name,
+        email: docData.email,
+        photoURL: docData.photoURL,
+        userAuthId: docData.userAuthId,
+        role: docData.role,
       };
     }
   }
