@@ -6,10 +6,10 @@ import {
   addDoc,
   CollectionReference,
 } from "firebase/firestore";
-import { IUser, User, IUserProps, UsersDB } from "../../../definitions";
+import { IUser, User, IUserProps, IUsersDB } from "../../../definitions";
 import { db } from "../../utils/firebase";
 
-export class FirebaseUsersDB implements UsersDB {
+export class FirebaseUsersDB implements IUsersDB {
   private readonly usersRef: CollectionReference = collection(db, "users");
 
   public async createUser(user: User): Promise<IUser> {

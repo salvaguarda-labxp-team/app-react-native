@@ -21,7 +21,7 @@ export type User = Omit<IUser, "_id" | "createdAt">;
 
 export type IUserProps = keyof IUser;
 
-export interface UsersDB {
+export interface IUsersDB {
   createUser: (userData: User) => Promise<IUser>;
   getUserByProperty: (
     property: IUserProps,

@@ -1,11 +1,11 @@
 import { UsersAPI } from "./";
-import { IUser, UsersDB } from "../../../definitions/IUser";
+import { IUser, IUsersDB } from "../../../definitions/IUser";
 
 const mockUsersDB: (args: {
   createUser?: any;
   getUserByProperty?: any;
   props?: Record<string, any>;
-}) => UsersDB = (args = {}) => {
+}) => IUsersDB = (args = {}) => {
   return {
     createUser: args.createUser ?? jest.fn(),
     getUserByProperty: args.getUserByProperty ?? jest.fn(),
@@ -13,13 +13,13 @@ const mockUsersDB: (args: {
   };
 };
 
-let currentUsersDB: UsersDB;
+let currentUsersDB: IUsersDB;
 
 describe("UsersAPI", () => {
   beforeAll(() => {
     currentUsersDB = mockUsersDB({});
   });
-  it("Receives UsersDB param", () => {
+  it("Receives IUsersDB param", () => {
     const api = new UsersAPI(currentUsersDB);
     expect(api).toBeTruthy();
   });

@@ -1,9 +1,9 @@
-import { IUser, User, UsersDB } from "../../../definitions";
+import { IUser, User, IUsersDB } from "../../../definitions";
 
 export class UsersAPI {
-  private readonly usersDB: UsersDB;
+  private readonly usersDB: IUsersDB;
 
-  public constructor(usersDB: UsersDB) {
+  public constructor(usersDB: IUsersDB) {
     this.usersDB = usersDB;
   }
 
