@@ -1,5 +1,5 @@
 import { UsersAPI } from "./";
-import { IUser, IUsersDB } from "../../../definitions/IUser";
+import { IUsersDB } from "../../../definitions/IUser";
 
 const mockUsersDB: (args: {
   createUser?: any;
@@ -55,11 +55,11 @@ describe("UsersAPI", () => {
       });
     }).rejects.toThrow(errorMessage);
   });
-  it("Returns IUser when search by email", async () => {
+  it("Returns IUser when search by userAuthId", async () => {
     const api = new UsersAPI(
       mockUsersDB({
         getUserByProperty: (property: any, val: any) => {
-          if (property === "email" && val === "roberto@gmail.com") {
+          if (property === "userAuthId" && val === "uid") {
             return {
               _id: 1,
               createdAt: new Date(),
@@ -75,14 +75,14 @@ describe("UsersAPI", () => {
       })
     );
 
-    const response = await api.getUserByEmail("roberto@gmail.com");
+    const response = await api.getUserByAuthId("uid");
     expect(response?._id).toEqual(1);
   });
-  it("Returns null when search by email hits nothing", async () => {
+  it("Returns null when search by userAuthId hits nothing", async () => {
     const api = new UsersAPI(
       mockUsersDB({
         getUserByProperty: (property: any, val: any) => {
-          if (property === "email" && val === "roberto@gmail.com") {
+          if (property === "userAuthId" && val === "uid") {
             return {
               _id: 1,
               createdAt: new Date(),
@@ -98,7 +98,7 @@ describe("UsersAPI", () => {
       })
     );
 
-    const response = await api.getUserByEmail("karol@gmail.com");
+    const response = await api.getUserByAuthId("other-uid");
     expect(response?._id).not.toBeTruthy();
   });
 });
