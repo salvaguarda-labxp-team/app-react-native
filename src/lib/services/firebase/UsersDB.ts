@@ -6,33 +6,22 @@ import {
   addDoc,
   CollectionReference,
 } from "firebase/firestore";
-import { IUser, User, IUserProps, IUsersDB } from "../../../definitions";
+import { IUser, User, IUserProps, UsersDB } from "../../../definitions";
 import { db } from "../../utils/firebase";
 
-export class FirebaseUsersDB implements IUsersDB {
+export class FirebaseUsersDB implements UsersDB {
   private readonly usersRef: CollectionReference = collection(db, "users");
 
   public async createUser(user: User): Promise<IUser> {
-    const { name, email, photoURL, userAuthId, role } = user;
+    const { name, email, photoURL } = user;
     const createdAt = new Date();
     const response = await addDoc(this.usersRef, {
       createdAt,
       name,
       email,
       photoURL,
-      userAuthId,
-      role,
     });
-
-    return {
-      name,
-      email,
-      photoURL,
-      _id: response.id,
-      createdAt,
-      userAuthId,
-      role,
-    };
+    return { name, email, photoURL, _id: response.id, createdAt };
   }
 
   public async getUserByProperty(
@@ -49,17 +38,13 @@ export class FirebaseUsersDB implements IUsersDB {
     ) {
       return null;
     } else {
-      const doc = querySnapshot.docs[0];
-      const docData = doc.data();
-
+      const doc = querySnapshot.docs[0].data();
       return {
         _id: doc.id,
-        createdAt: docData.createdAt.toDate(),
-        name: docData.name,
-        email: docData.email,
-        photoURL: docData.photoURL,
-        userAuthId: docData.userAuthId,
-        role: docData.role,
+        createdAt: doc.data().createdAt.toDate(),
+        name: doc.data().name,
+        email: doc.data().email,
+        photoURL: doc.data().photoURL,
       };
     }
   }

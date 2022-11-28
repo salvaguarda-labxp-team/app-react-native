@@ -5,44 +5,18 @@ import { useForm } from "react-hook-form";
 import { LoginForm, LoginFormData } from "../components/form/LoginForm";
 import { LoginScreenProps } from "../definitions/ScreenPropsTypes.js";
 import { AuthenticationAPI } from "../lib/services";
-import { FirebaseUsersAPI } from "../lib/services/FirebaseUsersAPI";
 import { auth } from "../lib/utils/firebase";
-import { LocalStorageProvider } from "../lib/utils/storage";
 
 const LoginPage = ({ navigation }: LoginScreenProps): JSX.Element => {
-  // TODO: pass object as parameter to LoginPage so that it can be mocked in tests
-  const storage = new LocalStorageProvider();
-
-  const fetchAndSaveUser = async (userAuthId: string): Promise<void> => {
-    const user = await FirebaseUsersAPI.getUserByAuthId(userAuthId);
-
-    await storage.set("user", user);
-  };
-
-  const clearUser = async (): Promise<void> => {
-    await storage.remove("user");
-  };
-
   useEffect(() => {
-    onAuthStateChanged(auth, (loggedUser) => {
-      const handleAuthStateChange = async (): Promise<void> => {
-        if (loggedUser != null) {
-          // User logged in
-          navigation.replace("Menu");
-          await fetchAndSaveUser(loggedUser.uid);
-        } else {
-          // User logged out
-          navigation.canGoBack() && navigation.popToTop();
-          await clearUser();
-        }
-      };
-
-      const handleError = (): void => {
-        alert("Erro ao fazer login. Por favor, tente novamente mais tarde.");
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Usuário logou
+        navigation.replace("Menu");
+      } else {
+        // Usuário deslogou
         navigation.canGoBack() && navigation.popToTop();
-      };
-
-      handleAuthStateChange().catch(handleError);
+      }
     });
   }, []);
 
