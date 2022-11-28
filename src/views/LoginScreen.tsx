@@ -27,11 +27,11 @@ const LoginPage = ({ navigation }: LoginScreenProps): JSX.Element => {
     onAuthStateChanged(auth, (loggedUser) => {
       const handleAuthStateChange = async (): Promise<void> => {
         if (loggedUser != null) {
-          // Usuário logou
+          // User logged in
           navigation.replace("Menu");
           await fetchAndSaveUser(loggedUser.uid);
         } else {
-          // Usuário deslogou
+          // User logged out
           navigation.canGoBack() && navigation.popToTop();
           await clearUser();
         }
