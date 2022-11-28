@@ -7,11 +7,20 @@ import { LoginScreenProps } from "../definitions/ScreenPropsTypes.js";
 import { AuthenticationAPI } from "../lib/services";
 import { FirebaseUsersAPI } from "../lib/services/FirebaseUsersAPI";
 import { auth } from "../lib/utils/firebase";
+import { LocalStorageProvider } from "../lib/utils/storage";
 
 const LoginPage = ({ navigation }: LoginScreenProps): JSX.Element => {
+  // TODO: pass object as parameter to LoginPage so that it can be mocked in tests
+  const storage = new LocalStorageProvider();
+
   const fetchAndSaveUser = async (userAuthId: string): Promise<void> => {
     const user = await FirebaseUsersAPI.getUserByAuthId(userAuthId);
-    // TODO: save user
+
+    await storage.set("user", user);
+  };
+
+  const clearUser = async (): Promise<void> => {
+    await storage.remove("user");
   };
 
   useEffect(() => {
@@ -24,6 +33,7 @@ const LoginPage = ({ navigation }: LoginScreenProps): JSX.Element => {
         } else {
           // Usuário deslogou
           navigation.canGoBack() && navigation.popToTop();
+          await clearUser();
         }
       };
 
