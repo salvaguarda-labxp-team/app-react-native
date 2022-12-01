@@ -16,6 +16,7 @@ import { auth } from "../lib/utils/firebase";
 import { useMediaControls } from "../hooks/useMediaControl";
 import { MediaInput } from "../components/chat/MediaInput";
 import { wait } from "../lib/utils";
+import { FirebaseChatAPI } from "../lib/services/FirebaseChatAPI";
 
 const ChatScreen = ({ route, navigation }: ChatScreenProps) => {
   const { roomId, roomName } = route.params;
@@ -30,7 +31,7 @@ const ChatScreen = ({ route, navigation }: ChatScreenProps) => {
   }, [roomId]);
 
   useLayoutEffect(() => {
-    wait(10000).then(() => fetchData().catch(console.error));
+    wait(10000).then(async () => await fetchData().catch(console.error));
   });
 
   useEffect(() => {
@@ -49,9 +50,14 @@ const ChatScreen = ({ route, navigation }: ChatScreenProps) => {
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, messages)
     );
-    const { _id, createdAt, text, user } = messages[0];
+    const { createdAt, text, user } = messages[0];
 
-    MessagesAPI.sendTextMessage({ _id, createdAt, text, user }, roomId);
+    FirebaseChatAPI.sendTextMessage({
+      createdAt: createdAt as Date,
+      text,
+      user,
+      rid: roomId,
+    }).catch(console.error);
   }, []);
 
   useLayoutEffect(() => {

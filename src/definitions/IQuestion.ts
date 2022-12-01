@@ -2,7 +2,7 @@ import { IQuestionSubject } from "./ISubject";
 
 export type IQuestionStatus = "pending" | "in_progress" | "closed";
 
-export type IQuestion = {
+export interface IQuestion {
   _id: string;
   rid: string;
   createdAt: Date;
@@ -12,4 +12,12 @@ export type IQuestion = {
   subject: IQuestionSubject;
   creatorId: string;
   status: IQuestionStatus;
-};
+}
+
+export type Question = Omit<IQuestion, "_id">;
+
+export type IQuestionProps = keyof IQuestion;
+
+export interface QuestionsDB {
+  updateQuestionLmByRoomId: (roomId: string, lm: Date) => Promise<void>;
+}
