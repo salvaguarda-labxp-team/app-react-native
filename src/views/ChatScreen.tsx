@@ -7,23 +7,23 @@ import React, {
 } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Avatar, Button } from "react-native-elements";
+import { Avatar } from "react-native-elements";
 import { GiftedChat } from "react-native-gifted-chat";
 import { IMessage } from "react-native-gifted-chat/lib/Models";
-import { AuthenticationAPI, MessagesAPI } from "../lib/services";
-import { ChatScreenProps, IUser } from "../definitions";
+import { AuthenticationAPI } from "../lib/services";
+import { ChatScreenProps } from "../definitions";
 import { auth } from "../lib/utils/firebase";
 import { useMediaControls } from "../hooks/useMediaControl";
 import { MediaInput } from "../components/chat/MediaInput";
 import { wait } from "../lib/utils";
 import { FirebaseChatAPI } from "../lib/services/FirebaseChatAPI";
 
-const ChatScreen = ({ route, navigation }: ChatScreenProps) => {
-  const { roomId, roomName } = route.params;
+const ChatScreen: React.FC<ChatScreenProps> = ({ route, navigation }) => {
+  const { roomId } = route.params;
   const [messages, setMessages] = useState<IMessage[]>([]);
 
-  const fetchData = async () => {
-    setMessages(await MessagesAPI.getMessagesFromRoom(roomId));
+  const fetchData = async (): Promise<void> => {
+    setMessages(await FirebaseChatAPI.getMessagesFromRoom(roomId));
   };
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const ChatScreen = ({ route, navigation }: ChatScreenProps) => {
   }, [roomId]);
 
   useLayoutEffect(() => {
-    wait(10000).then(async () => await fetchData().catch(console.error));
+    void wait(10000).then(async () => await fetchData().catch(console.error));
   });
 
   useEffect(() => {
@@ -42,7 +42,7 @@ const ChatScreen = ({ route, navigation }: ChatScreenProps) => {
     });
   }, []);
 
-  const goToChatList = () => {
+  const goToChatList = (): void => {
     navigation.goBack();
   };
 
@@ -82,7 +82,7 @@ const ChatScreen = ({ route, navigation }: ChatScreenProps) => {
             rounded
             source={{
               uri:
-                AuthenticationAPI.getCurrentUser()?.photoURL ||
+                AuthenticationAPI.getCurrentUser()?.photoURL ??
                 AuthenticationAPI.defaultPhotoURL,
             }}
           />
@@ -116,10 +116,10 @@ const ChatScreen = ({ route, navigation }: ChatScreenProps) => {
       showAvatarForEveryMessage={true}
       onSend={(messages) => onSend(messages)}
       user={{
-        _id: AuthenticationAPI.getCurrentUser()?.email || "",
-        name: AuthenticationAPI.getCurrentUser()?.displayName || "",
+        _id: AuthenticationAPI.getCurrentUser()?.email ?? "",
+        name: AuthenticationAPI.getCurrentUser()?.displayName ?? "",
         avatar:
-          AuthenticationAPI.getCurrentUser()?.photoURL ||
+          AuthenticationAPI.getCurrentUser()?.photoURL ??
           AuthenticationAPI.defaultPhotoURL,
       }}
       renderChatFooter={() => (
