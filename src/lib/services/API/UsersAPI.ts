@@ -1,9 +1,9 @@
-import { IUser, User, UsersDB } from "../../../definitions";
+import { IUser, User, IUsersDB } from "../../../definitions";
 
 export class UsersAPI {
-  private readonly usersDB: UsersDB;
+  private readonly usersDB: IUsersDB;
 
-  public constructor(usersDB: UsersDB) {
+  public constructor(usersDB: IUsersDB) {
     this.usersDB = usersDB;
   }
 
@@ -11,13 +11,7 @@ export class UsersAPI {
     return await this.usersDB.createUser(user);
   }
 
-  public async getUserByEmail(email: string): Promise<IUser | null> {
-    const response = await this.usersDB.getUserByProperty("email", email);
-    if (response !== null) {
-      return response;
-    } else {
-      // TODO do something with null value
-      return null;
-    }
+  public async getUserByAuthId(userAuthId: string): Promise<IUser | null> {
+    return await this.usersDB.getUserByProperty("userAuthId", userAuthId);
   }
 }

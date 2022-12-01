@@ -1,12 +1,13 @@
 import {
-  User,
   signOut,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   updateProfile,
   UserCredential,
 } from "firebase/auth";
+import { LoggedUser, Role } from "../../definitions/IUser.js";
 import { auth } from "../utils/firebase.js";
+import { FirebaseUsersAPI } from "./FirebaseUsersAPI";
 
 export class AuthenticationAPI {
   static readonly defaultPhotoURL =
@@ -24,24 +25,33 @@ export class AuthenticationAPI {
     email: string,
     password: string,
     displayName: string,
+    role: Role,
     userPhotoURL?: string
   ): Promise<void> {
-    const { user } = await createUserWithEmailAndPassword(
+    const { user: firebaseUser } = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
-    await updateProfile(user, {
-      displayName,
-      photoURL: userPhotoURL || AuthenticationAPI.defaultPhotoURL,
-    });
+
+    const photoURL = userPhotoURL ?? AuthenticationAPI.defaultPhotoURL;
+
+    await updateProfile(firebaseUser, { displayName, photoURL });
+
+    const user = {
+      name: displayName,
+      email,
+      photoURL,
+      userAuthId: firebaseUser.uid,
+      role,
+    };
+
+    await FirebaseUsersAPI.addUser(user);
   }
 
-  static getCurrentUser(): Pick<
-    User,
-    "uid" | "displayName" | "email" | "photoURL"
-  > | null {
+  static getCurrentUser(): LoggedUser | null {
     if (!auth.currentUser) return null;
+
     const { uid, displayName, email, photoURL } = auth.currentUser;
 
     const currentUser = {
@@ -50,6 +60,7 @@ export class AuthenticationAPI {
       email,
       photoURL,
     };
+
     return currentUser;
   }
 }
