@@ -47,6 +47,8 @@ export const QuestionItem: React.FC<{
   );
 };
 
+// TODO extract the `refreshing` state to the parent component and receive as props
+// wich will allow to test the correct component display when `refreshing` is true
 export const SubjectQuestionList: React.FC<{
   questions: IQuestion[];
   onListItemPress: (question: IQuestion) => void;

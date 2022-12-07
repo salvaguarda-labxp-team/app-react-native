@@ -29,4 +29,9 @@ describe("CreateQuestions", () => {
     const modal = screen.getByTestId("question-modal");
     expect(modal.props.visible).toBe(true);
   });
+  it("Redirects to question chat when clicked", () => {
+    // TODO implement
+    // need to mock AuthenticationAPI and QuestionsAPI?
+    expect(true).toBe(false);
+  });
 });
