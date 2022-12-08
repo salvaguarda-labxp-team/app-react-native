@@ -13,13 +13,14 @@ import {
 } from "./index";
 import { mockQuestion, mockQuestionsList } from "./testData";
 import TestRenderer, { act } from "react-test-renderer";
-import { IQuestion } from "../../definitions";
+import { IQuestion, SubjectsList, subjectsMap } from "../../definitions";
 import { RefreshControl } from "react-native";
 
 jest.useFakeTimers();
 
 let mockOnListItemPress = jest.fn();
 let mockOnListRefresh = jest.fn();
+let mockSetCurrentSubject = jest.fn();
 
 describe("QuestionItem", () => {
   beforeEach(() => {
@@ -52,7 +53,7 @@ describe("QuestionItem", () => {
         onListItemPress={mockOnListItemPress}
       />
     );
-    const listItem = screen.getByTestId("test-list-item");
+    const listItem = screen.getByTestId("test-question-" + mockQuestion._id);
     fireEvent.press(listItem);
     expect(mockOnListItemPress).toBeCalled();
     expect(mockOnListItemPress).toBeCalledWith(mockQuestion);
@@ -112,4 +113,61 @@ describe("SubjectQuestionList", () => {
   });
 });
 
-
+describe("QuestionListTabView", () => {
+  beforeEach(() => {
+    mockSetCurrentSubject = jest.fn();
+    jest.useFakeTimers();
+  });
+  it("Renders a `SubjectQuestionList` for each subject in the `SubjectsList` constant", () => {
+    const component = TestRenderer.create(
+      <QuestionListTabView
+        currentSubject={0}
+        onListItemPress={mockOnListItemPress}
+        onListRefresh={mockOnListRefresh}
+        setCurrentSubject={mockSetCurrentSubject}
+        questions={mockQuestionsList}
+      />
+    );
+    expect(component.root.findAllByType(SubjectQuestionList).length).toBe(
+      SubjectsList.length
+    );
+  });
+  it("For each subject, displays it's questions in the corresponding tab according to subject name", () => {
+    // for example, all "Math" questions are dispalyed under the "Math" tab
+    const component = render(
+      <QuestionListTabView
+        currentSubject={0}
+        onListItemPress={mockOnListItemPress}
+        onListRefresh={mockOnListRefresh}
+        setCurrentSubject={mockSetCurrentSubject}
+        questions={mockQuestionsList}
+      />
+    );
+    SubjectsList.forEach((subject) => {
+      const subjectQuestions = mockQuestionsList.filter(
+        (question) => subjectsMap[question.subject].name === subject.name
+      );
+      const subjectQuestionsComponent = component.getByTestId(
+        subject.name + "-list-testid"
+      );
+      expect(subjectQuestionsComponent).toBeTruthy();
+      subjectQuestions.forEach((question) => {
+        expect(
+          subjectQuestionsComponent.find(
+            (node) => node.props?.question?._id === question._id
+          )
+        ).toBeTruthy();
+      });
+    });
+  });
+  // it("Displays current subject's questions on the screen", () => {
+  //   // maybe it is possible to test wich questions are visible on screen or maybe that the
+  //   // `TabView` component receives the correct `value` prop
+  //   const component = render(<QuestionListTabView />);
+  //   expect(true).toBe(false);
+  // });
+  // it("Executes `onListRefresh` callback on `SubjectQuestionList` `onListRefresh`", () => {
+  //   const component = render(<QuestionListTabView />);
+  //   expect(true).toBe(false);
+  // });
+});

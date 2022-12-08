@@ -16,7 +16,7 @@ export const QuestionItem: React.FC<{
   return (
     <Pressable
       style={styles.listItem}
-      testID={'test-list-item'}
+      testID={"test-question-" + question._id}
       onPress={() => onListItemPress(question)}
     >
       <View
@@ -54,7 +54,8 @@ export const SubjectQuestionList: React.FC<{
   questions: IQuestion[];
   onListItemPress: (question: IQuestion) => void;
   onListRefresh: () => void;
-}> = ({ questions, onListItemPress, onListRefresh }) => {
+  testID: string;
+}> = ({ questions, onListItemPress, onListRefresh, testID }) => {
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -63,7 +64,7 @@ export const SubjectQuestionList: React.FC<{
   }, []);
 
   return (
-    <TabView.Item style={styles.tabViewItem}>
+    <TabView.Item style={styles.tabViewItem} testID={testID}>
       <SafeAreaView style={styles.scrollView}>
         <FlatList
           style={styles.questionsList}
@@ -98,6 +99,7 @@ export const QuestionListTabView: React.FC<{
     () =>
       SubjectsList.map((v, k) => (
         <SubjectQuestionList
+          testID={v.name + "-list-testid"}
           onListItemPress={onListItemPress}
           questions={questions.filter(
             (q) => subjectsMap[q.subject].name === v.name
