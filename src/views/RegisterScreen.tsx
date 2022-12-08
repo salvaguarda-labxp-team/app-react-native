@@ -1,28 +1,38 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { Input, Button } from "react-native-elements";
+import DropDownPicker from "react-native-dropdown-picker";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../lib/utils/firebase.js";
 import { AuthenticationAPI } from "../lib/services/AuthenticationAPI";
 import { RegisterScreenProps } from "../definitions/ScreenPropsTypes.js";
+import { Role } from "../definitions/IUser.js";
 
 const RegisterScreen = ({ navigation }: RegisterScreenProps): JSX.Element => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("student" as Role);
+  const [dropDownExpanded, setDropDownExpanded] = useState(false);
+
+  const availableRoles = [
+    { label: "Estudante", value: "student" },
+    { label: "Monitor", value: "monitor" },
+  ];
+
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        navigation.replace("Chat");
+        navigation.replace("Menu");
       }
     });
   }, []);
 
   const register = async (): Promise<void> => {
     try {
-      await AuthenticationAPI.register(email, password, name, imageUrl);
+      await AuthenticationAPI.register(email, password, name, role, imageUrl);
     } catch (error: any) {
       alert(error.message);
     }
@@ -56,6 +66,14 @@ const RegisterScreen = ({ navigation }: RegisterScreenProps): JSX.Element => {
         onChangeText={(text) => setPassword(text)}
         secureTextEntry
         autoCompleteType={"password"}
+      />
+      <DropDownPicker
+        placeholder="Tipo de usuário"
+        open={dropDownExpanded}
+        value={role}
+        items={availableRoles}
+        setOpen={setDropDownExpanded}
+        setValue={setRole}
       />
       <Input
         placeholder="Informe a URL da sua imagem de perfil"
