@@ -12,53 +12,67 @@ import {
   QuestionListTabView,
 } from "./index";
 import { act } from "react-test-renderer";
+import { IQuestion } from "../../definitions";
+
+let mockQuestion: IQuestion = {
+  _id: "",
+  createdAt: new Date(),
+  creatorId: "1",
+  description: "test-description-123",
+  lm: new Date(),
+  rid: "test-rid-123",
+  status: "closed",
+  subject: "Hist",
+  title: "test-title-123",
+};
+let mockOnListItemPress = jest.fn();
 
 describe("QuestionItem", () => {
+  beforeEach(() => {
+    mockOnListItemPress = jest.fn();
+    mockQuestion = {
+      _id: "",
+      createdAt: new Date(),
+      creatorId: "1",
+      description: "test-description-123",
+      lm: new Date(),
+      rid: "test-rid-123",
+      status: "closed",
+      subject: "Hist",
+      title: "test-title-123",
+    };
+  });
   it("Displays question data", () => {
-    const component = render(<QuestionItem />);
-    expect(true).toBe(false); 
+    const component = render(
+      <QuestionItem
+        question={mockQuestion}
+        onListItemPress={mockOnListItemPress}
+      />
+    );
+    // description
+    expect(component.getByText(mockQuestion.description)).toBeTruthy();
+    // lm
+    expect(
+      component.getByText(
+        mockQuestion.lm.toLocaleDateString() +
+          " - " +
+          mockQuestion.lm.toLocaleTimeString()
+      )
+    ).toBeTruthy();
+    // title
+    expect(component.getByText(mockQuestion.title)).toBeTruthy();
   });
   it("Executes `onListItemPress` callback on list item press", () => {
-    const component = render(<QuestionItem />);
-    expect(true).toBe(false); 
+    render(
+      <QuestionItem
+        question={mockQuestion}
+        onListItemPress={mockOnListItemPress}
+      />
+    );
+    const listItem = screen.getByTestId("test-list-item");
+    fireEvent.press(listItem);
+    expect(mockOnListItemPress).toBeCalled();
+    expect(mockOnListItemPress).toBeCalledWith(mockQuestion);
   });
 });
 
-describe("SubjectQuestionList", () => {
-    // TODO extract the `refreshing` state to the parent component and receive as props
-    // wich will allow to test the correct component display when `refreshing` is true
-  it("Displays a QuestionItem for each question", () => {
-    const component = render(<SubjectQuestionList />);
-    expect(true).toBe(false); 
-  });
-  it("Executes `onListItemPress` callback on list item press", () => {
-    const component = render(<SubjectQuestionList />);
-    expect(true).toBe(false); 
-  });
-  it("Executes `onListRefresh` callback on `RefreshControl` `onRefresh`", () => {
-    const component = render(<SubjectQuestionList />);
-    expect(true).toBe(false); 
-  });
-});
-
-describe("QuestionListTabView", () => {
-  it("Renders a `SubjectQuestionList` for each subject in the `SubjectsList` constant", () => {
-    const component = render(<QuestionListTabView />);
-    expect(true).toBe(false); 
-  });
-  it("For each subject, displays it's questions in the corresponding tab according to subject name", () => {
-    // for example, all "Math" questions are dispalyed under the "Math" tab
-    const component = render(<QuestionListTabView />);
-    expect(true).toBe(false); 
-  });
-  it("Displays current subject's questions on the screen", () => {
-    // maybe it is possible to test wich questions are visible on screen or maybe that the 
-    // `TabView` component receives the correct `value` prop
-    const component = render(<QuestionListTabView />);
-    expect(true).toBe(false); 
-  });
-  it("Executes `onListRefresh` callback on `SubjectQuestionList` `onListRefresh`", () => {
-    const component = render(<QuestionListTabView />);
-    expect(true).toBe(false); 
-  });
-});

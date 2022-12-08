@@ -16,6 +16,7 @@ export const QuestionItem: React.FC<{
   return (
     <Pressable
       style={styles.listItem}
+      testID={'test-list-item'}
       onPress={() => onListItemPress(question)}
     >
       <View
