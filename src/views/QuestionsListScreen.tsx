@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useLayoutEffect } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import Modal from "react-native-modal";
-import { Text, View, StyleSheet, Pressable, ScrollView } from "react-native";
+import { Text, View, StyleSheet, Pressable, ScrollView, TouchableOpacity } from "react-native";
 import { Input, FAB } from "react-native-elements";
 import { Tab } from "@rneui/themed";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -19,6 +19,8 @@ import {
 } from "../components/questionsList";
 import { LocalStorageProvider } from "../lib/utils/storage";
 import { SubscriptionsAPI } from "../lib/services/SubscriptionsAPI";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../lib/utils/firebase";
 
 const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
   navigation,
@@ -48,13 +50,24 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
   const storage = new LocalStorageProvider();
   const { status } = route.params;
 
+  const signOut = async () => {
+    await storage.remove("user");
+    await AuthenticationAPI.signOut();
+  };
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user == null) {
+        navigation.replace("Login");
+      }
+    });
+  }, []);
+
   const fetchData = async () => {
-    const user: IUser | null =
-      (await storage.get("user")) ||
+    const user: IUser | null = 
       (await AuthenticationAPI.getCurrentUserFromDB());
     if (user && user?.email != null && user?.email?.length > 0) {
       setUser(user);
-      console.log(user);
       setQuestions(
         user.role === "monitor" && user.subject
           ? await QuestionsAPI.getQuestionsByStatusAndSubject(
@@ -65,6 +78,21 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
       );
     }
   };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          style={{
+            marginRight: 30,
+          }}
+          onPress={signOut}
+        >
+          <MaterialIcons name="logout" size={24} color="black" />
+        </TouchableOpacity>
+      ),
+    });
+  }, []);
 
   const updateList = () => {
     fetchData().catch(console.error);
