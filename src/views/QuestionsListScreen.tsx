@@ -1,24 +1,33 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import Modal from "react-native-modal";
 import { Text, View, StyleSheet, Pressable, ScrollView } from "react-native";
 import { Input, FAB } from "react-native-elements";
 import { Tab } from "@rneui/themed";
 import { MaterialIcons } from "@expo/vector-icons";
-import { AuthenticationAPI, QuestionsAPI } from "../lib/services";
+import {
+  AuthenticationAPI,
+  QuestionsAPI,
+} from "../lib/services";
 import {
   IQuestion,
   SubjectsList,
   IQuestionSubject,
   QuestionsListScreenProps,
+  IUser,
 } from "../definitions";
-import { QuestionListTabView } from "../components/questionsList";
+import {
+  QuestionListTabView,
+  SubjectQuestionList,
+} from "../components/questionsList";
+import { LocalStorageProvider } from "../lib/utils/storage";
 
 const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
   navigation,
 }) => {
   const [questions, setQuestions] = useState<IQuestion[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [user, setUser] = useState<IUser>();
   const [description, setDescription] = useState("");
   const [questionTitle, setQuestionTitle] = useState("");
   const [isCQButtonDisabled, setIsCQButtonDisabled] = useState<boolean>(false);
@@ -37,12 +46,22 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
     { label: "Física", value: "Phys" },
     { label: "Artes", value: "Arts" },
   ]);
+  const storage = new LocalStorageProvider();
 
   const fetchData = async () => {
-    const user = AuthenticationAPI.getCurrentUser();
-    if (user?.email != null && user?.email?.length > 0) {
+    const user: IUser | null =
+      (await storage.get("user")) ||
+      (await AuthenticationAPI.getCurrentUserFromDB());
+    if (user && user?.email != null && user?.email?.length > 0) {
+      setUser(user);
+      console.log(user);
       setQuestions(
-        await QuestionsAPI.getUserQuestionsByStatus(user.email, "pending")
+        user.role === "monitor" && user.subject
+          ? await QuestionsAPI.getQuestionsByStatusAndSubject(
+              "pending",
+              user.subject
+            )
+          : await QuestionsAPI.getUserQuestionsByStatus(user.email, "pending")
       );
     }
   };
@@ -86,7 +105,6 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
 
   const onSubjectListItemPress = useCallback(
     (question: IQuestion) => {
-      console.log(question.title);
       navigation.navigate("Chat", {
         roomId: question.rid,
         roomName: question.title,
@@ -97,34 +115,63 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        style={styles.scrollTab}
-      >
-        <Tab
-          value={currentSubject}
-          onChange={(e) => setCurrentSubject(e)}
-          variant="primary"
-          disableIndicator={true}
-        >
-          {SubjectsList.map((v, i) => (
-            <Tab.Item
-              title={v.name}
-              titleStyle={{ fontSize: 12 }}
-              icon={{
-                name: v.icon,
-                type: "material",
-                color: "white",
-              }}
-              buttonStyle={(active) => ({
-                backgroundColor: active ? "#8f63aa" : "#6d388c",
-              })}
-              key={i}
-            />
-          ))}
-        </Tab>
-      </ScrollView>
+      {user && user.role === "student" ? (
+        <>
+          <ScrollView
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            style={styles.scrollTab}
+          >
+            <Tab
+              value={currentSubject}
+              onChange={(e) => setCurrentSubject(e)}
+              variant="primary"
+              disableIndicator={true}
+            >
+              {SubjectsList.map((v, i) => (
+                <Tab.Item
+                  title={v.name}
+                  titleStyle={{ fontSize: 12 }}
+                  icon={{
+                    name: v.icon,
+                    type: "material",
+                    color: "white",
+                  }}
+                  buttonStyle={(active) => ({
+                    backgroundColor: active ? "#8f63aa" : "#6d388c",
+                  })}
+                  key={i}
+                />
+              ))}
+            </Tab>
+          </ScrollView>
+          <QuestionListTabView
+            {...{
+              currentSubject,
+              onListItemPress: onSubjectListItemPress,
+              setCurrentSubject,
+              questions,
+              onListRefresh: updateList,
+              user,
+            }}
+          />
+          <FAB
+            testID="add-question"
+            icon={{ name: "add", color: "white" }}
+            placement="right"
+            onPress={() => setModalVisible(!modalVisible)}
+            buttonStyle={styles.fab}
+          />
+        </>
+      ) : (
+        <>
+          <SubjectQuestionList
+            questions={questions}
+            onListItemPress={onSubjectListItemPress}
+            onListRefresh={updateList}
+          />
+        </>
+      )}
 
       <Modal
         testID="question-modal"
@@ -175,22 +222,6 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
           </Pressable>
         </View>
       </Modal>
-      <QuestionListTabView
-        {...{
-          currentSubject,
-          onListItemPress: onSubjectListItemPress,
-          setCurrentSubject,
-          questions,
-          onListRefresh: updateList,
-        }}
-      />
-      <FAB
-        testID="add-question"
-        icon={{ name: "add", color: "white" }}
-        placement="right"
-        onPress={() => setModalVisible(!modalVisible)}
-        buttonStyle={styles.fab}
-      />
     </View>
   );
 };

@@ -3,7 +3,7 @@ import { StyleSheet, View, RefreshControl, Pressable } from "react-native";
 import { Text, ListItem } from "react-native-elements";
 import { TabView } from "@rneui/themed";
 import { MaterialIcons } from "@expo/vector-icons";
-import { IQuestion, SubjectsList, subjectsMap } from "../../definitions";
+import { IQuestion, IUser, SubjectsList, subjectsMap } from "../../definitions";
 import stringToColor from "string-to-color";
 import { FlatList } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -60,7 +60,6 @@ export const SubjectQuestionList: React.FC<{
   }, []);
 
   return (
-    <TabView.Item style={styles.tabViewItem}>
       <SafeAreaView style={styles.scrollView}>
         <FlatList
           style={styles.questionsList}
@@ -74,7 +73,7 @@ export const SubjectQuestionList: React.FC<{
           )}
         />
       </SafeAreaView>
-    </TabView.Item>
+    
   );
 };
 
@@ -84,29 +83,35 @@ export const QuestionListTabView: React.FC<{
   currentSubject: number;
   setCurrentSubject: Dispatch<SetStateAction<number>>;
   onListRefresh: () => void;
+  user?: IUser;
 }> = ({
   questions,
   onListItemPress,
   currentSubject,
   setCurrentSubject,
   onListRefresh,
+  user,
 }) => {
   const handleSubjectsLists = useMemo(
     () =>
       SubjectsList.map((v, k) => (
-        <SubjectQuestionList
-          onListItemPress={onListItemPress}
-          questions={questions.filter(
-            (q) => subjectsMap[q.subject].name === v.name
-          )}
-          onListRefresh={onListRefresh}
-          key={k}
-        />
+        <TabView.Item style={styles.tabViewItem} key={k}>
+          <SubjectQuestionList
+            onListItemPress={onListItemPress}
+            questions={questions.filter(
+              (q) => subjectsMap[q.subject].name === v.name
+            )}
+            onListRefresh={onListRefresh}
+          />
+        </TabView.Item>
       )),
     [questions, onListItemPress]
   );
   return (
     <View style={styles.tabView}>
+      {
+        user && user.role == "student"
+      }
       <TabView
         value={currentSubject}
         onChange={setCurrentSubject}

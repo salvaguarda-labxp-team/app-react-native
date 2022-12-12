@@ -113,6 +113,31 @@ export class QuestionsAPI {
     }));
   }
 
+  static async getQuestionsByStatusAndSubject(
+    status: string,
+    subject: string
+  ): Promise<IQuestion[]> {
+    const questionsQuery = query(
+      QuestionsAPI.questionsRef,
+      where("status", "==", status),
+      where("subject", "==", subject),
+      orderBy("lm", "desc")
+    );
+    const querySnapshotQuestions = await getDocs(questionsQuery);
+    return querySnapshotQuestions.docs.map((doc) => ({
+      _id: doc.id,
+      rid: doc.data().rid,
+      createdAt: doc.data().createdAt,
+      lm: doc.data().lm.toDate(),
+      title: doc.data().title,
+      description: doc.data().description,
+      subject: doc.data().subject,
+      type: doc.data().type,
+      creatorId: doc.data().creatorId,
+      status: doc.data().status,
+    }));
+  }
+
   static async getQuestionsByStatus(status: string): Promise<IQuestion[]> {
     const questionsQuery = query(
       QuestionsAPI.questionsRef,
