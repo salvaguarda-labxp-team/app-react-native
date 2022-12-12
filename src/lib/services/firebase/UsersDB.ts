@@ -13,7 +13,7 @@ export class FirebaseUsersDB implements IUsersDB {
   private readonly usersRef: CollectionReference = collection(db, "users");
 
   public async createUser(user: User): Promise<IUser> {
-    const { name, email, photoURL, userAuthId, role } = user;
+    const { name, email, photoURL, userAuthId, role, subject } = user;
     const createdAt = new Date();
     const response = await addDoc(this.usersRef, {
       createdAt,
@@ -22,6 +22,7 @@ export class FirebaseUsersDB implements IUsersDB {
       photoURL,
       userAuthId,
       role,
+      subject,
     });
 
     return {
@@ -32,6 +33,7 @@ export class FirebaseUsersDB implements IUsersDB {
       createdAt,
       userAuthId,
       role,
+      subject,
     };
   }
 
@@ -60,6 +62,7 @@ export class FirebaseUsersDB implements IUsersDB {
         photoURL: docData.photoURL,
         userAuthId: docData.userAuthId,
         role: docData.role,
+        subject: docData.subject,
       };
     }
   }
