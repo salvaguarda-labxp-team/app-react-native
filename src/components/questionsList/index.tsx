@@ -60,20 +60,19 @@ export const SubjectQuestionList: React.FC<{
   }, []);
 
   return (
-      <SafeAreaView style={styles.scrollView}>
-        <FlatList
-          style={styles.questionsList}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          data={questions}
-          keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
-            <QuestionItem question={item} onListItemPress={onListItemPress} />
-          )}
-        />
-      </SafeAreaView>
-    
+    <SafeAreaView style={styles.scrollView}>
+      <FlatList
+        style={styles.questionsList}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        data={questions}
+        keyExtractor={(item) => item._id}
+        renderItem={({ item }) => (
+          <QuestionItem question={item} onListItemPress={onListItemPress} />
+        )}
+      />
+    </SafeAreaView>
   );
 };
 
@@ -109,9 +108,7 @@ export const QuestionListTabView: React.FC<{
   );
   return (
     <View style={styles.tabView}>
-      {
-        user && user.role == "student"
-      }
+      {user && user.role == "student"}
       <TabView
         value={currentSubject}
         onChange={setCurrentSubject}

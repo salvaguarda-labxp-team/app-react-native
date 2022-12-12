@@ -11,7 +11,11 @@ import {
   documentId,
 } from "firebase/firestore";
 import { db } from "../utils/firebase";
-import { IQuestionSubject, IQuestion, IQuestionStatus } from "../../definitions";
+import {
+  IQuestionSubject,
+  IQuestion,
+  IQuestionStatus,
+} from "../../definitions";
 import { RoomsAPI } from "./RoomsAPI";
 
 export class QuestionsAPI {
@@ -69,13 +73,13 @@ export class QuestionsAPI {
     try {
       const questionsQuery = query(
         QuestionsAPI.questionsRef,
-        where(documentId(), "==", _id),
+        where(documentId(), "==", _id)
       );
       const querySnapshotQuestions = await getDocs(questionsQuery);
       updateDoc(doc(this.questionsRef, querySnapshotQuestions.docs[0].id), {
         status,
       });
-    } catch(e: any) {
+    } catch (e: any) {
       console.error(e);
     }
   }

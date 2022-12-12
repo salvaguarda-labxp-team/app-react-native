@@ -5,10 +5,7 @@ import { Text, View, StyleSheet, Pressable, ScrollView } from "react-native";
 import { Input, FAB } from "react-native-elements";
 import { Tab } from "@rneui/themed";
 import { MaterialIcons } from "@expo/vector-icons";
-import {
-  AuthenticationAPI,
-  QuestionsAPI,
-} from "../lib/services";
+import { AuthenticationAPI, QuestionsAPI } from "../lib/services";
 import {
   IQuestion,
   SubjectsList,
@@ -25,6 +22,7 @@ import { SubscriptionsAPI } from "../lib/services/SubscriptionsAPI";
 
 const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
   navigation,
+  route,
 }) => {
   const [questions, setQuestions] = useState<IQuestion[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -48,6 +46,7 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
     { label: "Artes", value: "Arts" },
   ]);
   const storage = new LocalStorageProvider();
+  const { status } = route.params;
 
   const fetchData = async () => {
     const user: IUser | null =
@@ -59,10 +58,10 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
       setQuestions(
         user.role === "monitor" && user.subject
           ? await QuestionsAPI.getQuestionsByStatusAndSubject(
-              "pending",
+              status,
               user.subject
             )
-          : await QuestionsAPI.getUserQuestionsByStatus(user.email, "pending")
+          : await QuestionsAPI.getUserQuestionsByStatus(user.email, status)
       );
     }
   };
@@ -108,7 +107,10 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
     async (question: IQuestion) => {
       if (user && user.role === "monitor" && question.status === "pending") {
         await SubscriptionsAPI.addSubscription(user._id, question.rid);
-        await QuestionsAPI.updateQuestionStatusById(question._id, "in_progress");
+        await QuestionsAPI.updateQuestionStatusById(
+          question._id,
+          "in_progress"
+        );
       }
       navigation.navigate("Chat", {
         roomId: question.rid,
