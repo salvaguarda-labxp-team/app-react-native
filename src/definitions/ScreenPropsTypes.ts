@@ -9,7 +9,9 @@ export interface RootStackParamsList {
   };
   ForgotPassword: undefined;
   ChatsList: undefined;
-  QuestionsList: undefined;
+  QuestionsList: {
+    status: string;
+  };
   Menu: undefined;
   Test: undefined;
   "Add Image": Record<string, string[]>;

@@ -21,6 +21,7 @@ import {
   SubjectQuestionList,
 } from "../components/questionsList";
 import { LocalStorageProvider } from "../lib/utils/storage";
+import { SubscriptionsAPI } from "../lib/services/SubscriptionsAPI";
 
 const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
   navigation,
@@ -103,14 +104,18 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
     }
   };
 
-  const onSubjectListItemPress = useCallback(
-    (question: IQuestion) => {
+  const onQuestionPress = useCallback(
+    async (question: IQuestion) => {
+      if (user && user.role === "monitor" && question.status === "pending") {
+        await SubscriptionsAPI.addSubscription(user._id, question.rid);
+        await QuestionsAPI.updateQuestionStatusById(question._id, "in_progress");
+      }
       navigation.navigate("Chat", {
         roomId: question.rid,
         roomName: question.title,
       });
     },
-    [navigation?.navigate]
+    [navigation?.navigate, user]
   );
 
   return (
@@ -148,7 +153,7 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
           <QuestionListTabView
             {...{
               currentSubject,
-              onListItemPress: onSubjectListItemPress,
+              onListItemPress: onQuestionPress,
               setCurrentSubject,
               questions,
               onListRefresh: updateList,
@@ -167,7 +172,7 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
         <>
           <SubjectQuestionList
             questions={questions}
-            onListItemPress={onSubjectListItemPress}
+            onListItemPress={onQuestionPress}
             onListRefresh={updateList}
           />
         </>
