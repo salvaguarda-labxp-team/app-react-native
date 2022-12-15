@@ -132,7 +132,7 @@ describe("QuestionListTabView", () => {
       SubjectsList.length
     );
   });
-  it("For each subject, displays it's questions in the corresponding tab according to subject name", () => {
+  it("For each subject, displays it's assigned questions in the corresponding tab according to subject name, and no other question", () => {
     // for example, all "Math" questions are dispalyed under the "Math" tab
     const component = render(
       <QuestionListTabView
@@ -143,20 +143,38 @@ describe("QuestionListTabView", () => {
         questions={mockQuestionsList}
       />
     );
-    SubjectsList.forEach((subject) => {
+    SubjectsList.forEach(({ name: subjectName }) => {
       const subjectQuestions = mockQuestionsList.filter(
-        (question) => question.subject === subject.name
+        (question) => question.subject === subjectName
+      );
+      const subjectQuestionsComplement = mockQuestionsList.filter(
+        (question) => question.subject !== subjectName
       );
       const subjectQuestionsComponent = component.getByTestId(
-        `subject-question-list.${subject.name}.root`
+        `subject-question-list.${subjectName}.root`
       );
       expect(subjectQuestionsComponent).toBeTruthy();
       subjectQuestions.forEach((question) => {
         expect(
-          subjectQuestionsComponent.find(
-            (node) => node.props?.question?._id === question._id
-          )
-        ).toBeTruthy();
+          subjectQuestionsComponent.findAll(
+            (node) =>
+              node.children.findIndex((c) =>
+                // eslint-disable-next-line @typescript-eslint/no-base-to-string
+                c.toString().includes(question.title)
+              ) >= 0
+          ).length > 0
+        ).toBe(true);
+      });
+      subjectQuestionsComplement.forEach((question) => {
+        expect(
+          subjectQuestionsComponent.findAll(
+            (node) =>
+              node.children.findIndex((c) =>
+                // eslint-disable-next-line @typescript-eslint/no-base-to-string
+                c.toString().includes(question.title)
+              ) >= 0
+          ).length
+        ).toBe(0);
       });
     });
   });
