@@ -13,7 +13,7 @@ import {
 } from "./index";
 import { mockQuestion, mockQuestionsList } from "./testData";
 import TestRenderer, { act } from "react-test-renderer";
-import { IQuestion, SubjectsList, subjectsMap } from "../../definitions";
+import { SubjectsList } from "../../definitions";
 import { RefreshControl } from "react-native";
 
 jest.useFakeTimers();
@@ -145,11 +145,10 @@ describe("QuestionListTabView", () => {
     );
     SubjectsList.forEach((subject) => {
       const subjectQuestions = mockQuestionsList.filter(
-        (question) =>
-          subjectsMap[question.subject].displayName === subject.displayName
+        (question) => question.subject === subject.name
       );
       const subjectQuestionsComponent = component.getByTestId(
-        `subject-question-list.${subject.displayName}.root`
+        `subject-question-list.${subject.name}.root`
       );
       expect(subjectQuestionsComponent).toBeTruthy();
       subjectQuestions.forEach((question) => {

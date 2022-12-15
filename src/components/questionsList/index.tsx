@@ -5,10 +5,9 @@ import { TabView } from "@rneui/themed";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
   IQuestion,
-  IQuestionSubjectDisplayName,
+  IQuestionSubject,
   IUser,
   SubjectsList,
-  subjectsMap,
 } from "../../definitions";
 import stringToColor from "string-to-color";
 import { FlatList } from "react-native-gesture-handler";
@@ -58,7 +57,7 @@ export const QuestionItem: React.FC<{
 // wich will allow to test the correct component display when `refreshing` is true
 export const SubjectQuestionList: React.FC<{
   questions: IQuestion[];
-  subject: IQuestionSubjectDisplayName;
+  subject: IQuestionSubject;
   onListItemPress: (question: IQuestion) => void;
   onListRefresh: () => void;
 }> = ({ questions, onListItemPress, onListRefresh, subject }) => {
@@ -106,13 +105,13 @@ export const QuestionListTabView: React.FC<{
 }) => {
   const handleSubjectsLists = useMemo(
     () =>
-      SubjectsList.map((v, k) => (
+      SubjectsList.map((subject, k) => (
         <TabView.Item style={styles.tabViewItem} key={k}>
           <SubjectQuestionList
-            subject={v.displayName}
+            subject={subject.name}
             onListItemPress={onListItemPress}
             questions={questions.filter(
-              (q) => subjectsMap[q.subject].displayName === v.displayName
+              (q) => q.subject === subject.name
             )}
             onListRefresh={onListRefresh}
           />
@@ -122,7 +121,7 @@ export const QuestionListTabView: React.FC<{
   );
   return (
     <View style={styles.tabView}>
-      {user != null && user.role == "student"}
+      {user != null && user.role === "student"}
       <TabView
         value={currentSubject}
         onChange={setCurrentSubject}
