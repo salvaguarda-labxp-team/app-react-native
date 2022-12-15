@@ -1,4 +1,5 @@
 import { User as FirebaseUser } from "firebase/auth";
+import { IQuestionSubject } from "./ISubject";
 
 export interface IUser {
   _id: string;
@@ -8,6 +9,7 @@ export interface IUser {
   photoURL: string | null;
   userAuthId: string;
   role: Role;
+  subject?: IQuestionSubject;
 }
 
 export type Role = "student" | "monitor";

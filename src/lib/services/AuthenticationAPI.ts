@@ -5,7 +5,7 @@ import {
   updateProfile,
   UserCredential,
 } from "firebase/auth";
-import { LoggedUser, Role } from "../../definitions/IUser.js";
+import { IUser, LoggedUser, Role } from "../../definitions";
 import { auth } from "../utils/firebase.js";
 import { FirebaseUsersAPI } from "./FirebaseUsersAPI";
 
@@ -62,5 +62,14 @@ export class AuthenticationAPI {
     };
 
     return currentUser;
+  }
+
+  static async getCurrentUserFromDB(): Promise<IUser | null> {
+    const user = this.getCurrentUser();
+    if (user) {
+      return await FirebaseUsersAPI.getUserByAuthId(user.uid);
+    }
+
+    return user;
   }
 }

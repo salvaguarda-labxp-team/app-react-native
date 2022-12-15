@@ -8,9 +8,14 @@ import {
   getDocs,
   CollectionReference,
   doc,
+  documentId,
 } from "firebase/firestore";
 import { db } from "../utils/firebase";
-import { IQuestionSubject, IQuestion } from "../../definitions";
+import {
+  IQuestionSubject,
+  IQuestion,
+  IQuestionStatus,
+} from "../../definitions";
 import { RoomsAPI } from "./RoomsAPI";
 
 export class QuestionsAPI {
@@ -61,6 +66,24 @@ export class QuestionsAPI {
     });
   }
 
+  static async updateQuestionStatusById(
+    _id: string,
+    status: IQuestionStatus
+  ): Promise<void> {
+    try {
+      const questionsQuery = query(
+        QuestionsAPI.questionsRef,
+        where(documentId(), "==", _id)
+      );
+      const querySnapshotQuestions = await getDocs(questionsQuery);
+      updateDoc(doc(this.questionsRef, querySnapshotQuestions.docs[0].id), {
+        status,
+      });
+    } catch (e: any) {
+      console.error(e);
+    }
+  }
+
   static async getUserQuestionsByStatus(
     uid: string,
     status: string
@@ -94,6 +117,31 @@ export class QuestionsAPI {
     const questionsQuery = query(
       QuestionsAPI.questionsRef,
       where("creatorId", "==", uid),
+      where("status", "==", status),
+      where("subject", "==", subject),
+      orderBy("lm", "desc")
+    );
+    const querySnapshotQuestions = await getDocs(questionsQuery);
+    return querySnapshotQuestions.docs.map((doc) => ({
+      _id: doc.id,
+      rid: doc.data().rid,
+      createdAt: doc.data().createdAt,
+      lm: doc.data().lm.toDate(),
+      title: doc.data().title,
+      description: doc.data().description,
+      subject: doc.data().subject,
+      type: doc.data().type,
+      creatorId: doc.data().creatorId,
+      status: doc.data().status,
+    }));
+  }
+
+  static async getQuestionsByStatusAndSubject(
+    status: string,
+    subject: string
+  ): Promise<IQuestion[]> {
+    const questionsQuery = query(
+      QuestionsAPI.questionsRef,
       where("status", "==", status),
       where("subject", "==", subject),
       orderBy("lm", "desc")
