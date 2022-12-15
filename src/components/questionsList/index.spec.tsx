@@ -53,7 +53,7 @@ describe("QuestionItem", () => {
         onListItemPress={mockOnListItemPress}
       />
     );
-    const listItem = screen.getByTestId("test-question-" + mockQuestion._id);
+    const listItem = screen.getByTestId("question-item." + mockQuestion._id);
     fireEvent.press(listItem);
     expect(mockOnListItemPress).toBeCalled();
     expect(mockOnListItemPress).toBeCalledWith(mockQuestion);
@@ -145,10 +145,11 @@ describe("QuestionListTabView", () => {
     );
     SubjectsList.forEach((subject) => {
       const subjectQuestions = mockQuestionsList.filter(
-        (question) => subjectsMap[question.subject].name === subject.name
+        (question) =>
+          subjectsMap[question.subject].displayName === subject.displayName
       );
       const subjectQuestionsComponent = component.getByTestId(
-        subject.name + "-list-testid"
+        `subject-question-list.${subject.displayName}.root`
       );
       expect(subjectQuestionsComponent).toBeTruthy();
       subjectQuestions.forEach((question) => {

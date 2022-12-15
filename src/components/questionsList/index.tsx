@@ -3,7 +3,13 @@ import { StyleSheet, View, RefreshControl, Pressable } from "react-native";
 import { Text, ListItem } from "react-native-elements";
 import { TabView } from "@rneui/themed";
 import { MaterialIcons } from "@expo/vector-icons";
-import { IQuestion, IUser, SubjectsList, subjectsMap } from "../../definitions";
+import {
+  IQuestion,
+  IQuestionSubjectDisplayName,
+  IUser,
+  SubjectsList,
+  subjectsMap,
+} from "../../definitions";
 import stringToColor from "string-to-color";
 import { FlatList } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -16,7 +22,7 @@ export const QuestionItem: React.FC<{
   return (
     <Pressable
       style={styles.listItem}
-      testID={"test-question-" + question._id}
+      testID={"question-item." + question._id}
       onPress={() => onListItemPress(question)}
     >
       <View
@@ -52,10 +58,10 @@ export const QuestionItem: React.FC<{
 // wich will allow to test the correct component display when `refreshing` is true
 export const SubjectQuestionList: React.FC<{
   questions: IQuestion[];
+  subject: IQuestionSubjectDisplayName;
   onListItemPress: (question: IQuestion) => void;
   onListRefresh: () => void;
-  testID: string;
-}> = ({ questions, onListItemPress, onListRefresh, testID }) => {
+}> = ({ questions, onListItemPress, onListRefresh, subject }) => {
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -64,7 +70,10 @@ export const SubjectQuestionList: React.FC<{
   }, []);
 
   return (
-    <SafeAreaView style={styles.scrollView} testID={testID}>
+    <SafeAreaView
+      style={styles.scrollView}
+      testID={`subject-question-list.${subject}.root`}
+    >
       <FlatList
         style={styles.questionsList}
         refreshControl={
@@ -100,10 +109,10 @@ export const QuestionListTabView: React.FC<{
       SubjectsList.map((v, k) => (
         <TabView.Item style={styles.tabViewItem} key={k}>
           <SubjectQuestionList
-            testID={v.name + "-list-testid"}
+            subject={v.displayName}
             onListItemPress={onListItemPress}
             questions={questions.filter(
-              (q) => subjectsMap[q.subject].name === v.name
+              (q) => subjectsMap[q.subject].displayName === v.displayName
             )}
             onListRefresh={onListRefresh}
           />
@@ -113,7 +122,7 @@ export const QuestionListTabView: React.FC<{
   );
   return (
     <View style={styles.tabView}>
-      {(user != null) && user.role == "student"}
+      {user != null && user.role == "student"}
       <TabView
         value={currentSubject}
         onChange={setCurrentSubject}

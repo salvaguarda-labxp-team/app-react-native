@@ -66,7 +66,7 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
   const fetchData = async () => {
     const user: IUser | null = 
       (await AuthenticationAPI.getCurrentUserFromDB());
-    if (user && user?.email != null && user?.email?.length > 0) {
+    if ((user != null) && user?.email != null && user?.email?.length > 0) {
       setUser(user);
       setQuestions(
         user.role === "monitor" && user.subject
@@ -133,7 +133,7 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
 
   const onQuestionPress = useCallback(
     async (question: IQuestion) => {
-      if (user && user.role === "monitor" && question.status === "pending") {
+      if ((user != null) && user.role === "monitor" && question.status === "pending") {
         await SubscriptionsAPI.addSubscription(user._id, question.rid);
         await QuestionsAPI.updateQuestionStatusById(
           question._id,
@@ -150,7 +150,7 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
 
   return (
     <View style={styles.container}>
-      {user && user.role === "student" ? (
+      {(user != null) && user.role === "student" ? (
         <>
           <ScrollView
             horizontal={true}
@@ -165,7 +165,7 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
             >
               {SubjectsList.map((v, i) => (
                 <Tab.Item
-                  title={v.name}
+                  title={v.displayName}
                   titleStyle={{ fontSize: 12 }}
                   icon={{
                     name: v.icon,
