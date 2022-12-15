@@ -11,7 +11,10 @@ import { QuestionsDB } from "../../../definitions";
 import { db } from "../../utils/firebase";
 
 export class FirebaseQuestionsDB implements QuestionsDB {
-  private readonly questionsRef: CollectionReference = collection(db, "questions");
+  private readonly questionsRef: CollectionReference = collection(
+    db,
+    "questions"
+  );
 
   async updateQuestionLmByRoomId(
     rid: string,
