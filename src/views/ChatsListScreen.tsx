@@ -10,7 +10,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { onAuthStateChanged } from "firebase/auth";
 import { MaterialIcons } from "@expo/vector-icons";
 
-import { AuthenticationAPI, RoomsAPI, FirebaseUsersAPI } from "../lib/services";
+import { AuthenticationAPI, RoomsAPI } from "../lib/services";
 import { ChatsListScreenProps, IRoom } from "../definitions";
 import { auth } from "../lib/utils/firebase";
 
