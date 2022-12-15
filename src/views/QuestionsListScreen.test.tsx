@@ -12,7 +12,7 @@ import { act } from "react-test-renderer";
 describe("CreateQuestions", () => {
   it("TODO", () => {
     expect(true).toBe(true);
-  })
+  });
   // TODO remove this test?
   // it("Renders 4 children on React tree", () => {
   //   const route = {
@@ -33,8 +33,12 @@ describe("CreateQuestions", () => {
   //   render(<QuestionsListScreen />);
   //   const button = screen.getByTestId("add-question");
   //   fireEvent.press(button);
-
   //   const modal = screen.getByTestId("question-modal");
   //   expect(modal.props.visible).toBe(true);
+  // });
+  // it("Redirects to question chat when clicked", () => {
+  //   TODO implement
+  //   need to mock AuthenticationAPI and QuestionsAPI?
+  //   expect(true).toBe(false);
   // });
 });

@@ -3,7 +3,12 @@ import { StyleSheet, View, RefreshControl, Pressable } from "react-native";
 import { Text, ListItem } from "react-native-elements";
 import { TabView } from "@rneui/themed";
 import { MaterialIcons } from "@expo/vector-icons";
-import { IQuestion, IUser, SubjectsList, subjectsMap } from "../../definitions";
+import {
+  IQuestion,
+  IQuestionSubject,
+  IUser,
+  SubjectsList,
+} from "../../definitions";
 import stringToColor from "string-to-color";
 import { FlatList } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -16,6 +21,7 @@ export const QuestionItem: React.FC<{
   return (
     <Pressable
       style={styles.listItem}
+      testID={"question-item." + question._id}
       onPress={() => onListItemPress(question)}
     >
       <View
@@ -47,11 +53,14 @@ export const QuestionItem: React.FC<{
   );
 };
 
+// TODO extract the `refreshing` state to the parent component and receive as props
+// wich will allow to test the correct component display when `refreshing` is true
 export const SubjectQuestionList: React.FC<{
   questions: IQuestion[];
+  subject: IQuestionSubject;
   onListItemPress: (question: IQuestion) => void;
   onListRefresh: () => void;
-}> = ({ questions, onListItemPress, onListRefresh }) => {
+}> = ({ questions, onListItemPress, onListRefresh, subject }) => {
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -60,7 +69,10 @@ export const SubjectQuestionList: React.FC<{
   }, []);
 
   return (
-    <SafeAreaView style={styles.scrollView}>
+    <SafeAreaView
+      style={styles.scrollView}
+      testID={`subject-question-list.${subject}.root`}
+    >
       <FlatList
         style={styles.questionsList}
         refreshControl={
@@ -93,12 +105,13 @@ export const QuestionListTabView: React.FC<{
 }) => {
   const handleSubjectsLists = useMemo(
     () =>
-      SubjectsList.map((v, k) => (
+      SubjectsList.map((subject, k) => (
         <TabView.Item style={styles.tabViewItem} key={k}>
           <SubjectQuestionList
+            subject={subject.name}
             onListItemPress={onListItemPress}
             questions={questions.filter(
-              (q) => subjectsMap[q.subject].name === v.name
+              (q) => q.subject === subject.name
             )}
             onListRefresh={onListRefresh}
           />
@@ -108,7 +121,7 @@ export const QuestionListTabView: React.FC<{
   );
   return (
     <View style={styles.tabView}>
-      {user && user.role == "student"}
+      {user != null && user.role === "student"}
       <TabView
         value={currentSubject}
         onChange={setCurrentSubject}

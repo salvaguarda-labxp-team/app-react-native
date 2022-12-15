@@ -9,8 +9,20 @@ export type IQuestionSubject =
   | "Philo"
   | "Essay";
 
+export type IQuestionSubjectDisplayName =
+  | "Matemática"
+  | "Português"
+  | "Geografia"
+  | "História"
+  | "Biologia"
+  | "Química"
+  | "Sociologia"
+  | "Filosofia"
+  | "Redação";
+
 export interface SubjectInfo {
-  name: string;
+  displayName: IQuestionSubjectDisplayName;
+  name: IQuestionSubject;
   icon: string;
 }
 
@@ -20,39 +32,48 @@ type SubjectsMap = {
 
 export const subjectsMap: SubjectsMap = {
   Math: {
-    name: "Matemática",
+    displayName: "Matemática",
+    name: "Math",
     icon: "calculate",
   },
   Port: {
-    name: "Português",
+    displayName: "Português",
+    name: "Port",
     icon: "book",
   },
   Geo: {
-    name: "Geografia",
+    displayName: "Geografia",
+    name: "Geo",
     icon: "public",
   },
   Hist: {
-    name: "História",
+    displayName: "História",
+    name: "Hist",
     icon: "history-edu",
   },
   Bio: {
-    name: "Biologia",
+    displayName: "Biologia",
+    name: "Bio",
     icon: "biotech",
   },
   Chem: {
-    name: "Química",
+    displayName: "Química",
+    name: "Chem",
     icon: "science",
   },
   Socio: {
-    name: "Sociologia",
+    displayName: "Sociologia",
+    name: "Socio",
     icon: "groups",
   },
   Philo: {
-    name: "Filosofia",
+    displayName: "Filosofia",
+    name: "Philo",
     icon: "lightbulb",
   },
   Essay: {
-    name: "Redação",
+    displayName: "Redação",
+    name: "Essay",
     icon: "edit",
   },
 } as const;
