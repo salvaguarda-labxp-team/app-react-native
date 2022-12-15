@@ -1,7 +1,20 @@
-import React, { useState, useEffect, useCallback, useMemo, useLayoutEffect } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useLayoutEffect,
+} from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import Modal from "react-native-modal";
-import { Text, View, StyleSheet, Pressable, ScrollView, TouchableOpacity } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Pressable,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { Input, FAB } from "react-native-elements";
 import { Tab } from "@rneui/themed";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -64,9 +77,8 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
   }, []);
 
   const fetchData = async () => {
-    const user: IUser | null = 
-      (await AuthenticationAPI.getCurrentUserFromDB());
-    if (user && user?.email != null && user?.email?.length > 0) {
+    const user: IUser | null = await AuthenticationAPI.getCurrentUserFromDB();
+    if (user != null && user?.email != null && user?.email?.length > 0) {
       setUser(user);
       setQuestions(
         user.role === "monitor" && user.subject
@@ -133,7 +145,11 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
 
   const onQuestionPress = useCallback(
     async (question: IQuestion) => {
-      if (user && user.role === "monitor" && question.status === "pending") {
+      if (
+        user != null &&
+        user.role === "monitor" &&
+        question.status === "pending"
+      ) {
         await SubscriptionsAPI.addSubscription(user._id, question.rid);
         await QuestionsAPI.updateQuestionStatusById(
           question._id,
@@ -150,7 +166,7 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
 
   return (
     <View style={styles.container}>
-      {user && user.role === "student" ? (
+      {user != null && user.role === "student" ? (
         <>
           <ScrollView
             horizontal={true}
@@ -163,12 +179,12 @@ const QuestionsListScreen: React.FC<QuestionsListScreenProps> = ({
               variant="primary"
               disableIndicator={true}
             >
-              {SubjectsList.map((v, i) => (
+              {SubjectsList.map((subject, i) => (
                 <Tab.Item
-                  title={v.name}
+                  title={subject.displayName}
                   titleStyle={{ fontSize: 12 }}
                   icon={{
-                    name: v.icon,
+                    name: subject.icon,
                     type: "material",
                     color: "white",
                   }}
